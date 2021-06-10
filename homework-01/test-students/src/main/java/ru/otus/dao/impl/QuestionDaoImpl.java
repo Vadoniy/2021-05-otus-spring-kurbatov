@@ -1,8 +1,11 @@
 package ru.otus.dao.impl;
 
 import com.opencsv.bean.CsvToBeanBuilder;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.stereotype.Service;
 import ru.otus.dao.QuestionDao;
 import ru.otus.domain.FileQuestion;
 import ru.otus.exception.BusinessException;
@@ -13,20 +16,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class QuestionDaoImpl implements QuestionDao {
 
-    private final Resource resource;
+    private final ResourceLoader resourceLoader;
 
-    public QuestionDaoImpl(Resource resource) {
-        this.resource = resource;
-    }
+    @Value("${file-name}")
+    private String fileName;
 
     @Override
     public List<FileQuestion> readQuestions() {
-
         final var questions = new ArrayList<FileQuestion>();
 
-        try (final var reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
+        try (final var reader = new BufferedReader(new InputStreamReader(resourceLoader.getResource(fileName).getInputStream()))) {
             questions.addAll(new CsvToBeanBuilder<FileQuestion>(reader)
                     .withType(FileQuestion.class)
                     .build()
