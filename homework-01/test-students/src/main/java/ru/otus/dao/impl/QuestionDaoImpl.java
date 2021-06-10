@@ -4,7 +4,7 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import ru.otus.dao.QuestionDao;
-import ru.otus.domain.Question;
+import ru.otus.domain.FileQuestion;
 import ru.otus.exception.BusinessException;
 
 import java.io.BufferedReader;
@@ -22,13 +22,13 @@ public class QuestionDaoImpl implements QuestionDao {
     }
 
     @Override
-    public List<Question> readQuestions() {
+    public List<FileQuestion> readQuestions() {
 
-        final var questions = new ArrayList<Question>();
+        final var questions = new ArrayList<FileQuestion>();
 
         try (final var reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
-            questions.addAll(new CsvToBeanBuilder<Question>(reader)
-                    .withType(Question.class)
+            questions.addAll(new CsvToBeanBuilder<FileQuestion>(reader)
+                    .withType(FileQuestion.class)
                     .build()
                     .parse());
         } catch (Exception e) {

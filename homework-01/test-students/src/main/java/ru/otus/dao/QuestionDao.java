@@ -1,10 +1,10 @@
 package ru.otus.dao;
 
-import ru.otus.domain.Question;
+import ru.otus.domain.FileQuestion;
 
 import java.util.List;
 
 public interface QuestionDao {
 
-    List<Question> readQuestions();
+    List<FileQuestion> readQuestions();
 }
