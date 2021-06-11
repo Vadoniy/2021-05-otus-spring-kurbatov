@@ -4,7 +4,7 @@ import ru.otus.domain.FileQuestion;
 
 import java.util.List;
 
-public interface QuestionDao {
+public interface FileQuestionDao {
 
-    List<FileQuestion> readQuestions();
+    List<FileQuestion> readFileQuestions();
 }

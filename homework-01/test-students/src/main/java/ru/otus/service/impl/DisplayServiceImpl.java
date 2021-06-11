@@ -3,11 +3,13 @@ package ru.otus.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.otus.exception.ShowTextException;
 import ru.otus.service.DisplayService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 @Service
 @Slf4j
@@ -17,12 +19,15 @@ public class DisplayServiceImpl implements DisplayService {
     private String stopWord;
 
     @Override
-    public void showText(String textToShow) {
-        System.out.println(textToShow);
-//        getInputString();
+    public void showText(String textToShow, OutputStream outputStream) {
+        try (outputStream) {
+            outputStream.write(textToShow.getBytes());
+        } catch (IOException e) {
+            throw new ShowTextException(e);
+        }
     }
 
-
+    @Override
     public String getInputString() {
         final var br = new BufferedReader(new InputStreamReader(System.in));
         try {
