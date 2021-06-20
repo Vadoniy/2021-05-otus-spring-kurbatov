@@ -20,8 +20,9 @@ public class DisplayServiceImpl implements DisplayService {
 
     @Override
     public void showText(String textToShow, OutputStream outputStream) {
-        try (outputStream) {
+        try {
             outputStream.write(textToShow.getBytes());
+            outputStream.write('\n');
         } catch (IOException e) {
             throw new ShowTextException(e);
         }
