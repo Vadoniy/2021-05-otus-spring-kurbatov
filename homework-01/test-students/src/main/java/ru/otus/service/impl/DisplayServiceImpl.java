@@ -1,8 +1,9 @@
 package ru.otus.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.otus.configuration.BusinessConfigurationProperties;
 import ru.otus.exception.ShowTextException;
 import ru.otus.service.DisplayService;
 
@@ -12,11 +13,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class DisplayServiceImpl implements DisplayService {
 
-    @Value("${stop-word}")
-    private String stopWord;
+    private final BusinessConfigurationProperties businessConfigurationProperties;
 
     @Override
     public void showText(String textToShow, OutputStream outputStream) {
@@ -33,7 +34,7 @@ public class DisplayServiceImpl implements DisplayService {
         final var br = new BufferedReader(new InputStreamReader(System.in));
         try {
             final var input = br.readLine();
-            if (stopWord.equals(input)) {
+            if (businessConfigurationProperties.getStopWord().equals(input)) {
                 log.info("User decided to interrupt exam.");
                 System.out.println("You have typed exit, we are sorry that you are going.");
                 System.exit(0);

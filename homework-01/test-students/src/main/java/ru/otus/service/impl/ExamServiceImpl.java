@@ -2,9 +2,9 @@ package ru.otus.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import ru.otus.configuration.BusinessConfigurationProperties;
 import ru.otus.dao.QuestionDao;
 import ru.otus.domain.ExamQuestion;
 import ru.otus.exception.ReadFileQuestionsException;
@@ -23,15 +23,14 @@ public class ExamServiceImpl implements ExamService {
 
     private final DisplayService displayServiceImpl;
 
-    @Value("${stop-word}")
-    private String stopWord;
+    private final BusinessConfigurationProperties businessConfigurationProperties;
 
     @Override
     public void startExam() {
         try {
             final var questions = questionDao.getQuestions();
 
-            displayServiceImpl.showText(String.format("Let's begin the exam. Type %s to go away or press enter to continue", stopWord),
+            displayServiceImpl.showText(String.format("Let's begin the exam. Type %s to go away or press enter to continue", businessConfigurationProperties.getStopWord()),
                     System.out);
             final var amountOfQuestions = questions.size();
             final var amountOfCorrectAnswers = questions.stream()

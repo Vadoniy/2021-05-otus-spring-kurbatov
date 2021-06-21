@@ -3,9 +3,9 @@ package ru.otus.dao.impl;
 import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import ru.otus.configuration.BusinessConfigurationProperties;
 import ru.otus.dao.QuestionDao;
 import ru.otus.domain.ExamQuestion;
 import ru.otus.domain.FileQuestion;
@@ -26,12 +26,11 @@ public class QuestionDaoImpl implements QuestionDao {
 
     private final FileQuestionToExamQuestionConverter fileQuestionToExamQuestionConverter;
 
-    @Value("${file-name}")
-    private String fileName;
+    private final BusinessConfigurationProperties businessConfigurationProperties;
 
     @Override
     public List<ExamQuestion> getQuestions() {
-        try (final var reader = new BufferedReader(new InputStreamReader(resourceLoader.getResource(fileName).getInputStream()))) {
+        try (final var reader = new BufferedReader(new InputStreamReader(resourceLoader.getResource(businessConfigurationProperties.getFileName()).getInputStream()))) {
             return new CsvToBeanBuilder<FileQuestion>(reader)
                     .withType(FileQuestion.class)
                     .build()
