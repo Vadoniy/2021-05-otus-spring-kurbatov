@@ -1,10 +1,10 @@
 package ru.otus.service;
 
-import java.io.OutputStream;
-
 public interface DisplayService {
 
-    void showText(String textToShow, OutputStream outputStream);
+    void showText(String textToShow);
+
+    void showText(String textToShow, String... args);
 
     String getInputString();
 }

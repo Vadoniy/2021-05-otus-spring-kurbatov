@@ -1,6 +1,5 @@
 package ru.otus.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,51 +12,82 @@ import ru.otus.service.ExamService;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class ExamServiceImpl implements ExamService {
 
     private final QuestionDao questionDao;
 
-    private final DisplayService displayServiceImpl;
+    private final DisplayService displayService;
 
-    @Value("${stop-word}")
-    private String stopWord;
+    private final String stopWord;
+
+    public ExamServiceImpl(QuestionDao questionDao, DisplayService displayService, @Value("${stop-word}") String stopWord) {
+        this.questionDao = questionDao;
+        this.displayService = displayService;
+        this.stopWord = stopWord;
+    }
 
     @Override
     public void startExam() {
         try {
-            final var questions = questionDao.getQuestions();
+            displayService.showText("Let's begin the exam. Any moment you can type \"%s\" to leave.", stopWord);
 
-            displayServiceImpl.showText(String.format("Let's begin the exam. Type %s to go away or press enter to continue", stopWord),
-                    System.out);
+            final var studentsName = findOutStudentsName();
+            final var questions = questionDao.getQuestions();
             final var amountOfQuestions = questions.size();
-            final var amountOfCorrectAnswers = questions.stream()
+            final var questionsWithAnswers = questions.stream()
                     .filter(Objects::nonNull)
                     .map(this::processTheQuestion)
-                    .filter(Boolean::booleanValue)
+                    .collect(Collectors.toList());
+            final var amountOfCorrectAnswers = questionsWithAnswers.stream()
+                    .filter(Objects::nonNull)
+                    .filter(question -> question.getCorrectAnswer().equals(question.getUsersAnswer()))
                     .count();
-            if (amountOfCorrectAnswers <= amountOfQuestions / 2) {
-                displayServiceImpl.showText("You are the weakest link, good bye.", System.out);
-            } else if (amountOfCorrectAnswers == amountOfQuestions) {
-                displayServiceImpl.showText("Congratulations! You are the strongest link!", System.out);
-            } else {
-                displayServiceImpl.showText("Not bad, but try harder in the future.", System.out);
-            }
+            displayService.showText(getResult(amountOfQuestions, amountOfCorrectAnswers));
+            log.info("Student {}, correct answers {}/{}}", studentsName, amountOfCorrectAnswers, amountOfQuestions);
         } catch (ReadFileQuestionsException ex) {
-            displayServiceImpl.showText("Can't read input resource! Description: " + ex.getMessage(), System.err);
+            displayService.showText("Can't read input resource! Description: " + ex.getMessage());
         }
     }
 
-    private boolean processTheQuestion(ExamQuestion question) {
-        displayServiceImpl.showText(question.toString(), System.out);
-        final var usersAnswer = displayServiceImpl.getInputString();
-        return validateUsersAnswer(usersAnswer).equals(question.getCorrectAnswer());
+    private String findOutStudentsName() {
+        final var studentsName = getStudentsInfo("name");
+        final var studentsLastName = getStudentsInfo("surname");
+        final var stringJoiner = new StringJoiner(" ");
+        return stringJoiner.add(studentsName).add(studentsLastName).toString();
     }
 
-    private Integer validateUsersAnswer(String usersAnswer) {
+    private String getResult(int amountOfQuestions, long amountOfCorrectAnswers) {
+        if (amountOfCorrectAnswers <= amountOfQuestions / 2) {
+            return "You are the weakest link, good bye.";
+        } else if (amountOfCorrectAnswers == amountOfQuestions) {
+            return "Congratulations! You are the strongest link!";
+        } else {
+            return "Not bad, but try harder in the future.";
+        }
+    }
+
+    private ExamQuestion processTheQuestion(ExamQuestion question) {
+        displayService.showText(question.toString());
+        final var usersAnswer = displayService.getInputString();
+        checkInputForInterruptionOfExam(usersAnswer);
+        question.setUsersAnswer(validateUsersAnswer(usersAnswer));
+        return question;
+    }
+
+    private void checkInputForInterruptionOfExam(String usersAnswer) {
+        if (stopWord.equals(usersAnswer)) {
+            log.info("User decided to interrupt exam.");
+            displayService.showText("You have typed \"exit\", we are sorry that you are going.");
+            System.exit(0);
+        }
+    }
+
+    private int validateUsersAnswer(String usersAnswer) {
         try {
             return Optional.ofNullable(usersAnswer)
                     .filter(StringUtils::hasText)
@@ -65,9 +95,20 @@ public class ExamServiceImpl implements ExamService {
                     .orElse(0);
         } catch (NumberFormatException ex) {
             log.error("Wrong input from user. {}", ex.getMessage());
-            displayServiceImpl.showText("Look, it is just test, you should type number of answer," +
-                    " it is always digit, don't use anything else. Try another time", System.err);
+            displayService.showText("Look, it is just test, you should type number of answer," +
+                    " it is always digit, don't use anything else.");
         }
         return 0;
+    }
+
+    private String getStudentsInfo(String whatWeWantToFindOut) {
+        displayService.showText("Please, type your %s", whatWeWantToFindOut);
+        final var studentsName = new StringBuilder(displayService.getInputString());
+        while (!StringUtils.hasText(studentsName)) {
+            displayService.showText("Are you kidding? Type your %s and let's go on.", whatWeWantToFindOut);
+            studentsName.append(displayService.getInputString());
+        }
+        checkInputForInterruptionOfExam(studentsName.toString());
+        return studentsName.toString();
     }
 }

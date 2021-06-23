@@ -6,43 +6,52 @@ import org.springframework.stereotype.Service;
 import ru.otus.exception.ShowTextException;
 import ru.otus.service.DisplayService;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.Scanner;
 
 @Service
 @Slf4j
 public class DisplayServiceImpl implements DisplayService {
 
-    @Value("${stop-word}")
-    private String stopWord;
+    private final String stopWord;
+
+    private final PrintStream printStreamOut;
+
+    private final Scanner scanner;
+
+    public DisplayServiceImpl(@Value("${stop-word}") String stopWord) {
+        this.stopWord = stopWord;
+        this.scanner = new Scanner(System.in);
+        this.printStreamOut = System.out;
+    }
 
     @Override
-    public void showText(String textToShow, OutputStream outputStream) {
+    public void showText(String textToShow) {
         try {
-            outputStream.write(textToShow.getBytes());
-            outputStream.write('\n');
-        } catch (IOException e) {
+            printStreamOut.println(textToShow);
+        } catch (Exception e) {
+            throw new ShowTextException(e);
+        }
+    }
+
+    @Override
+    public void showText(String textToShow, String... args) {
+        try {
+            printStreamOut.println(String.format(textToShow, args));
+        } catch (Exception e) {
             throw new ShowTextException(e);
         }
     }
 
     @Override
     public String getInputString() {
-        final var br = new BufferedReader(new InputStreamReader(System.in));
+        final var stringBuilder = new StringBuilder();
         try {
-            final var input = br.readLine();
-            if (stopWord.equals(input)) {
-                log.info("User decided to interrupt exam.");
-                System.out.println("You have typed exit, we are sorry that you are going.");
-                System.exit(0);
-            }
-            return input;
-        } catch (IOException e) {
+            stringBuilder.append(scanner.nextLine());
+        } catch (Exception e) {
             log.error("Wrong input {}", e.getMessage());
-            System.err.println("Wrong input, try again please");
+            showText("Wrong input, try again please");
         }
-        return "0";
+        return stringBuilder.toString();
     }
 }

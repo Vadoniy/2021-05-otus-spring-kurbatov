@@ -9,11 +9,14 @@ import lombok.Setter;
 public class FileQuestion {
 
     @CsvBindByPosition(position = 0)
-    private String question;
+    private String questionNumber;
 
     @CsvBindByPosition(position = 1)
-    private String answers;
+    private String question;
 
     @CsvBindByPosition(position = 2)
+    private String answers;
+
+    @CsvBindByPosition(position = 3)
     private Integer correctAnswer;
 }

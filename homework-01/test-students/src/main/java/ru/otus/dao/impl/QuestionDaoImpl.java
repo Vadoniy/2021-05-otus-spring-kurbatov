@@ -1,7 +1,6 @@
 package ru.otus.dao.impl;
 
 import com.opencsv.bean.CsvToBeanBuilder;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
@@ -19,15 +18,19 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class QuestionDaoImpl implements QuestionDao {
 
     private final ResourceLoader resourceLoader;
 
     private final FileQuestionToExamQuestionConverter fileQuestionToExamQuestionConverter;
 
-    @Value("${file-name}")
-    private String fileName;
+    private final String fileName;
+
+    public QuestionDaoImpl(ResourceLoader resourceLoader, FileQuestionToExamQuestionConverter fileQuestionToExamQuestionConverter, @Value("${file-name}") String fileName) {
+        this.resourceLoader = resourceLoader;
+        this.fileQuestionToExamQuestionConverter = fileQuestionToExamQuestionConverter;
+        this.fileName = fileName;
+    }
 
     @Override
     public List<ExamQuestion> getQuestions() {
