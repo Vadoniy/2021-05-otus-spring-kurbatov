@@ -1,7 +1,9 @@
 package ru.otus;
 
-import org.springframework.context.annotation.*;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import ru.otus.service.ExamService;
 
 @Configuration
@@ -13,10 +15,5 @@ public class ApplicationMain {
         final var context = new AnnotationConfigApplicationContext(ApplicationMain.class);
         final var examService = context.getBean(ExamService.class);
         examService.startExam();
-    }
-
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
-        return new PropertySourcesPlaceholderConfigurer();
     }
 }

@@ -10,7 +10,7 @@ class FileQuestionToExamQuestionConverterTest {
 
     @Test
     public void questionsAreExist() throws NoSuchFieldException, IllegalAccessException {
-        final var questionDao = new QuestionDaoImpl(new DefaultResourceLoader(), new FileQuestionToExamQuestionConverter());
+        final var questionDao = new QuestionDaoImpl(new DefaultResourceLoader(), new FileQuestionToExamQuestionConverter(), "test.csv");
         final var fileNameField = questionDao.getClass().getDeclaredField("fileName");
         fileNameField.setAccessible(true);
         fileNameField.set(questionDao, "test.csv");
