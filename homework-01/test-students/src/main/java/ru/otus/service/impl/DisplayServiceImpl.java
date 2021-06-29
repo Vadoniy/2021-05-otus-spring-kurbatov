@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.otus.exception.ShowTextException;
 import ru.otus.service.DisplayService;
 
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
@@ -13,16 +14,14 @@ import java.util.Scanner;
 @Slf4j
 public class DisplayServiceImpl implements DisplayService {
 
-    private final String stopWord;
-
     private final PrintStream printStreamOut;
 
     private final Scanner scanner;
 
-    public DisplayServiceImpl(@Value("${stop-word}") String stopWord) {
-        this.stopWord = stopWord;
-        this.scanner = new Scanner(System.in);
-        this.printStreamOut = System.out;
+    public DisplayServiceImpl(@Value("#{T(java.lang.System).out}") PrintStream out,
+                              @Value("#{T(java.lang.System).in}") InputStream in) {
+        this.scanner = new Scanner(in);
+        this.printStreamOut = out;
     }
 
     @Override
@@ -45,13 +44,10 @@ public class DisplayServiceImpl implements DisplayService {
 
     @Override
     public String getInputString() {
-        final var stringBuilder = new StringBuilder();
         try {
-            stringBuilder.append(scanner.nextLine());
+            return scanner.nextLine();
         } catch (Exception e) {
-            log.error("Wrong input {}", e.getMessage());
-            showText("Wrong input, try again please");
+            throw new ShowTextException(e);
         }
-        return stringBuilder.toString();
     }
 }
