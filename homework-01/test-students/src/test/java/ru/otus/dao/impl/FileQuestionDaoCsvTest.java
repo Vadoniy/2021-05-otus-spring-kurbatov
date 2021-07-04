@@ -19,13 +19,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class FileQuestionDaoImplTest {
+class FileQuestionDaoCsvTest {
 
     @Mock
     private FileQuestionToExamQuestionConverter fileQuestionToExamQuestionConverter;
 
     @Test
-    public void questionsAreExist() throws NoSuchFieldException, IllegalAccessException {
+    public void questionsAreExist() {
         given(fileQuestionToExamQuestionConverter.convert(any()))
                 .willReturn(
                         new ExamQuestion()
@@ -34,16 +34,13 @@ class FileQuestionDaoImplTest {
                                 .setCorrectAnswer(new Random().nextInt())
                                 .setQuestionNumber(new Random().nextInt())
                 );
-        final var questionDao = new QuestionDaoImpl(new DefaultResourceLoader(), fileQuestionToExamQuestionConverter, "test.csv");
-        final var fileNameField = questionDao.getClass().getDeclaredField("fileName");
-        fileNameField.setAccessible(true);
-        fileNameField.set(questionDao, "test.csv");
+        final var questionDao = new QuestionDaoCsv(new DefaultResourceLoader(), fileQuestionToExamQuestionConverter, "test.csv");
         assertNotNull(questionDao.getQuestions());
     }
 
     @Test
     public void emptyResourceThrowsException() {
-        assertThrows(ReadFileQuestionsException.class, () -> new QuestionDaoImpl(null, fileQuestionToExamQuestionConverter, "test.csv")
+        assertThrows(ReadFileQuestionsException.class, () -> new QuestionDaoCsv(null, fileQuestionToExamQuestionConverter, "test.csv")
                 .getQuestions());
     }
 }

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
-public class QuestionDaoImpl implements QuestionDao {
+public class QuestionDaoCsv implements QuestionDao {
 
     private final ResourceLoader resourceLoader;
 
@@ -26,7 +26,7 @@ public class QuestionDaoImpl implements QuestionDao {
 
     private final String fileName;
 
-    public QuestionDaoImpl(ResourceLoader resourceLoader, FileQuestionToExamQuestionConverter fileQuestionToExamQuestionConverter, @Value("${file-name}") String fileName) {
+    public QuestionDaoCsv(ResourceLoader resourceLoader, FileQuestionToExamQuestionConverter fileQuestionToExamQuestionConverter, @Value("${file-name}") String fileName) {
         this.resourceLoader = resourceLoader;
         this.fileQuestionToExamQuestionConverter = fileQuestionToExamQuestionConverter;
         this.fileName = fileName;

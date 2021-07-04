@@ -3,7 +3,7 @@ package ru.otus.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.otus.exception.ShowTextException;
+import ru.otus.exception.DisplayServiceException;
 import ru.otus.service.DisplayService;
 
 import java.io.InputStream;
@@ -12,14 +12,14 @@ import java.util.Scanner;
 
 @Service
 @Slf4j
-public class DisplayServiceImpl implements DisplayService {
+public class DisplayServiceConsole implements DisplayService {
 
     private final PrintStream printStreamOut;
 
     private final Scanner scanner;
 
-    public DisplayServiceImpl(@Value("#{T(java.lang.System).out}") PrintStream out,
-                              @Value("#{T(java.lang.System).in}") InputStream in) {
+    public DisplayServiceConsole(@Value("#{T(java.lang.System).out}") PrintStream out,
+                                 @Value("#{T(java.lang.System).in}") InputStream in) {
         this.scanner = new Scanner(in);
         this.printStreamOut = out;
     }
@@ -29,7 +29,7 @@ public class DisplayServiceImpl implements DisplayService {
         try {
             printStreamOut.println(textToShow);
         } catch (Exception e) {
-            throw new ShowTextException(e);
+            throw new DisplayServiceException(e);
         }
     }
 
@@ -38,7 +38,7 @@ public class DisplayServiceImpl implements DisplayService {
         try {
             printStreamOut.println(String.format(textToShow, args));
         } catch (Exception e) {
-            throw new ShowTextException(e);
+            throw new DisplayServiceException(e);
         }
     }
 
@@ -47,7 +47,7 @@ public class DisplayServiceImpl implements DisplayService {
         try {
             return scanner.nextLine();
         } catch (Exception e) {
-            throw new ShowTextException(e);
+            throw new DisplayServiceException(e);
         }
     }
 }

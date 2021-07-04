@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import ru.otus.dao.QuestionDao;
 import ru.otus.domain.ExamQuestion;
+import ru.otus.exception.DisplayServiceException;
 import ru.otus.exception.ReadFileQuestionsException;
-import ru.otus.exception.ShowTextException;
 import ru.otus.service.DisplayService;
 import ru.otus.service.ExamService;
 
@@ -117,7 +117,7 @@ public class ExamServiceImpl implements ExamService {
         final var sb = new StringBuilder();
         try {
             sb.append(displayService.getInputString());
-        } catch (ShowTextException ex) {
+        } catch (DisplayServiceException ex) {
             log.error("Wrong input {}", ex.getMessage());
             displayService.showText("Wrong input");
         }
