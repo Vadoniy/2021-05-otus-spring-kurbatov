@@ -23,6 +23,8 @@ public class BookDaoJdbc implements BookDao {
 
     private static final String NAME_FIELD_NAME = "NAME";
 
+    private static final String GENRE_FIELD_NAME = "GENRE";
+
     private static final String AUTHOR_ID_FIELD_NAME = "AUTHOR_ID";
 
     private static final String GENRE_ID_FIELD_NAME = "GENRE_ID";
@@ -31,8 +33,7 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public boolean insert(Book book) {
-        return jdbc.update("INSERT INTO BOOK (ID, TITLE, AUTHOR_ID, GENRE_ID) VALUES (?, ?, ?, ?)",
-                book.getId(),
+        return jdbc.update("INSERT INTO BOOK (TITLE, AUTHOR_ID, GENRE_ID) VALUES (?, ?, ?, ?)",
                 book.getTitle(),
                 book.getAuthor().getId(),
                 book.getGenre().getId()) == 1;
@@ -40,7 +41,7 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public Book getById(long id) {
-        return jdbc.queryForObject("SELECT B.ID, B.TITLE, B.AUTHOR_ID, A.NAME, B.GENRE_ID, G.TITLE FROM BOOK B " +
+        return jdbc.queryForObject("SELECT B.ID, B.TITLE, B.AUTHOR_ID, A.NAME, B.GENRE_ID, G.GENRE FROM BOOK B " +
                 "JOIN AUTHOR A " +
                 "ON B.AUTHOR_ID = A.ID " +
                 "JOIN GENRE G " +
@@ -49,7 +50,7 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public List<Book> getAll() {
-        return jdbc.query("SELECT B.ID, B.TITLE, B.AUTHOR_ID, A.NAME, B.GENRE_ID, G.TITLE FROM BOOK B " +
+        return jdbc.query("SELECT B.ID, B.TITLE, B.AUTHOR_ID, A.NAME, B.GENRE_ID, G.GENRE FROM BOOK B " +
                 "JOIN AUTHOR A " +
                 "ON B.AUTHOR_ID = A.ID " +
                 "JOIN GENRE G " +
@@ -79,7 +80,7 @@ public class BookDaoJdbc implements BookDao {
             final var authorId = resultSet.getLong(AUTHOR_ID_FIELD_NAME);
             final var authorName = resultSet.getString(NAME_FIELD_NAME);
             final var genreId = resultSet.getLong(GENRE_ID_FIELD_NAME);
-            final var genreTitle = resultSet.getString(TITLE_FIELD_NAME);
+            final var genreTitle = resultSet.getString(GENRE_FIELD_NAME);
             return new Book(id, title, new Author(authorId, authorName), new Genre(genreId, genreTitle));
         }
     }
