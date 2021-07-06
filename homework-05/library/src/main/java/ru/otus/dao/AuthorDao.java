@@ -2,7 +2,6 @@ package ru.otus.dao;
 
 
 import ru.otus.domain.Author;
-import ru.otus.domain.Book;
 
 import java.util.List;
 
