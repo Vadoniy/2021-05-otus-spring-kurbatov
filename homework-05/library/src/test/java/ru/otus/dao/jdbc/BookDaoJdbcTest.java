@@ -2,66 +2,52 @@ package ru.otus.dao.jdbc;
 
 import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.annotation.Rollback;
-import ru.otus.dao.AuthorDao;
 import ru.otus.dao.BookDao;
-import ru.otus.dao.GenreDao;
-import ru.otus.dao.jdbc.mapper.AuthorMapper;
 import ru.otus.dao.jdbc.mapper.BookMapper;
-import ru.otus.dao.jdbc.mapper.GenreMapper;
+import ru.otus.domain.Author;
 import ru.otus.domain.Book;
+import ru.otus.domain.Genre;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @JdbcTest
-@Import({AuthorDaoJdbc.class, BookDaoJdbc.class, GenreDaoJdbc.class, AuthorMapper.class, BookMapper.class, GenreMapper.class})
+@Import({BookDaoJdbc.class, BookMapper.class})
 class BookDaoJdbcTest {
-
-    @Autowired
-    public AuthorDao authorDaoJdbc;
 
     @Autowired
     public BookDao bookDaoJdbc;
 
-    @Autowired
-    public GenreDao genreDaoJdbc;
-
     @Test
     @Rollback
     void insert() {
-        final var author1 = authorDaoJdbc.getById(0);
-        final var genre1 = genreDaoJdbc.getById(0);
-        final var book1 = new Book(RandomString.make(), author1, genre1);
+        final var expectedAuthor = Mockito.mock(Author.class);
+        final var expectedGenre = Mockito.mock(Genre.class);
+        final var expectedBook = new Book(RandomString.make(), expectedAuthor, expectedGenre);
         final var allBooksBefore = bookDaoJdbc.getAll();
         assertEquals(0, allBooksBefore.stream()
-                .filter(book -> book.getTitle().equals(book1.getTitle()))
+                .filter(book -> book.getTitle().equals(expectedBook.getTitle()))
                 .count());
-        bookDaoJdbc.insert(book1);
+        bookDaoJdbc.insert(expectedBook);
         final var allBooksAfter = bookDaoJdbc.getAll();
         assertEquals(1, allBooksAfter.stream()
-                .filter(book -> book.getTitle().equals(book1.getTitle()))
-                .count());
-        assertEquals(1, allBooksAfter.stream()
-                .filter(book ->
-                        book.getAuthor().equals(book1.getAuthor()) &&
-                                book.getGenre().equals(book1.getGenre()) &&
-                                book.getTitle().equals(book1.getTitle())
-                )
+                .filter(book -> book.getTitle().equals(expectedBook.getTitle()))
                 .count());
     }
 
     @Test
     @Rollback
     void getById() {
-        final var author1 = authorDaoJdbc.getById(0);
-        final var genre1 = genreDaoJdbc.getById(0);
-        final var book1 = new Book(RandomString.make(), author1, genre1);
+        final var expectedAuthor = Mockito.mock(Author.class);
+        final var expectedGenre = Mockito.mock(Genre.class);
+        final var expectedBook = new Book(RandomString.make(), expectedAuthor, expectedGenre);
         assertThrows(EmptyResultDataAccessException.class, () -> bookDaoJdbc.getById(1));
-        bookDaoJdbc.insert(book1);
+        bookDaoJdbc.insert(expectedBook);
         final var newId = bookDaoJdbc.getAll().stream()
                 .filter(book -> book.getId() != 0)
                 .map(Book::getId)
@@ -86,9 +72,9 @@ class BookDaoJdbcTest {
     @Rollback
     void update() {
         final var newTitle = "Title";
-        final var author1 = authorDaoJdbc.getById(0);
-        final var genre1 = genreDaoJdbc.getById(0);
-        final var bookToUpdate = new Book(0, newTitle, author1, genre1);
+        final var expectedAuthor = Mockito.mock(Author.class);
+        final var expectedGenre = Mockito.mock(Genre.class);
+        final var bookToUpdate = new Book(0, newTitle, expectedAuthor, expectedGenre);
         final var beforeUpdate = bookDaoJdbc.getById(0);
         assertNotEquals(newTitle, beforeUpdate.getTitle());
         bookDaoJdbc.update(bookToUpdate);
