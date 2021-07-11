@@ -17,9 +17,9 @@ public class ExamQuestion {
 
     private List<String> answers;
 
-    private Integer usersAnswer;
+    private int usersAnswer;
 
-    private Integer correctAnswer;
+    private int correctAnswer;
 
     @Override
     public String toString() {

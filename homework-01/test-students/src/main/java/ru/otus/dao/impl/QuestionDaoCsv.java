@@ -4,7 +4,7 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import ru.otus.dao.QuestionDao;
 import ru.otus.domain.ExamQuestion;
 import ru.otus.domain.FileQuestion;
@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Service
-public class QuestionDaoImpl implements QuestionDao {
+@Repository
+public class QuestionDaoCsv implements QuestionDao {
 
     private final ResourceLoader resourceLoader;
 
@@ -26,7 +26,7 @@ public class QuestionDaoImpl implements QuestionDao {
 
     private final String fileName;
 
-    public QuestionDaoImpl(ResourceLoader resourceLoader, FileQuestionToExamQuestionConverter fileQuestionToExamQuestionConverter, @Value("${file-name}") String fileName) {
+    public QuestionDaoCsv(ResourceLoader resourceLoader, FileQuestionToExamQuestionConverter fileQuestionToExamQuestionConverter, @Value("${file-name}") String fileName) {
         this.resourceLoader = resourceLoader;
         this.fileQuestionToExamQuestionConverter = fileQuestionToExamQuestionConverter;
         this.fileName = fileName;
