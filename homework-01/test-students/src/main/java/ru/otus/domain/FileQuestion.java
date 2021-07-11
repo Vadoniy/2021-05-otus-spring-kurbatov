@@ -3,9 +3,11 @@ package ru.otus.domain;
 import com.opencsv.bean.CsvBindByPosition;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
 public class FileQuestion {
 
     @CsvBindByPosition(position = 0)

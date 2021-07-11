@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import ru.otus.dao.QuestionDao;
 import ru.otus.domain.ExamQuestion;
+import ru.otus.exception.DisplayServiceException;
 import ru.otus.exception.ReadFileQuestionsException;
 import ru.otus.service.DisplayService;
 import ru.otus.service.ExamService;
@@ -45,7 +46,7 @@ public class ExamServiceImpl implements ExamService {
                     .collect(Collectors.toList());
             final var amountOfCorrectAnswers = questionsWithAnswers.stream()
                     .filter(Objects::nonNull)
-                    .filter(question -> question.getCorrectAnswer().equals(question.getUsersAnswer()))
+                    .filter(question -> question.getCorrectAnswer() == question.getUsersAnswer())
                     .count();
             displayService.showText(getResult(amountOfQuestions, amountOfCorrectAnswers));
             log.info("Student {}, correct answers {}/{}}", studentsName, amountOfCorrectAnswers, amountOfQuestions);
@@ -73,7 +74,7 @@ public class ExamServiceImpl implements ExamService {
 
     private ExamQuestion processTheQuestion(ExamQuestion question) {
         displayService.showText(question.toString());
-        final var usersAnswer = displayService.getInputString();
+        final var usersAnswer = getInputString();
         checkInputForInterruptionOfExam(usersAnswer);
         question.setUsersAnswer(validateUsersAnswer(usersAnswer));
         return question;
@@ -103,12 +104,23 @@ public class ExamServiceImpl implements ExamService {
 
     private String getStudentsInfo(String whatWeWantToFindOut) {
         displayService.showText("Please, type your %s", whatWeWantToFindOut);
-        final var studentsName = new StringBuilder(displayService.getInputString());
+        final var studentsName = new StringBuilder(getInputString());
         while (!StringUtils.hasText(studentsName)) {
             displayService.showText("Are you kidding? Type your %s and let's go on.", whatWeWantToFindOut);
-            studentsName.append(displayService.getInputString());
+            studentsName.append(getInputString());
         }
         checkInputForInterruptionOfExam(studentsName.toString());
         return studentsName.toString();
+    }
+
+    private String getInputString() {
+        final var sb = new StringBuilder();
+        try {
+            sb.append(displayService.getInputString());
+        } catch (DisplayServiceException ex) {
+            log.error("Wrong input {}", ex.getMessage());
+            displayService.showText("Wrong input");
+        }
+        return sb.toString();
     }
 }
