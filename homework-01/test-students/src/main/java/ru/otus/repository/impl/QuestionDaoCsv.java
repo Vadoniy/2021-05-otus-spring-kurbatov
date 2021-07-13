@@ -1,11 +1,11 @@
-package ru.otus.dao.impl;
+package ru.otus.repository.impl;
 
 import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Repository;
-import ru.otus.dao.QuestionDao;
+import ru.otus.repository.QuestionDao;
 import ru.otus.domain.ExamQuestion;
 import ru.otus.domain.FileQuestion;
 import ru.otus.exception.ReadFileQuestionsException;

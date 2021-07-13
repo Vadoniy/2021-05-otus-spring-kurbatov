@@ -2,9 +2,9 @@ spring:
   datasource:
     url: jdbc:h2:mem:testdb
     data: test-data.sql
+    initialization-mode: always
 
-  h2:
-    console:
-      path: /h2-console
-      settings:
-        web-allow-others: true
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none

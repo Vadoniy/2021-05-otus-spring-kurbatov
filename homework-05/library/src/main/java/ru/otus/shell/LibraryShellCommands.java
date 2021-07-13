@@ -6,6 +6,7 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
+import ru.otus.domain.Comment;
 import ru.otus.domain.Genre;
 import ru.otus.service.LibraryService;
 
@@ -65,5 +66,31 @@ public class LibraryShellCommands {
     @ShellMethod(value = "Get list of genres", key = {"listGenres", "lg"})
     public List<Genre> getGenresList() {
         return libraryServiceImpl.getGenres();
+    }
+
+
+    @ShellMethod(value = "Get list of comments by bookId", key = {"listCommentsBook", "lcb"})
+    public List<Comment> getCommentsByBookId(@ShellOption long bookId) {
+        return libraryServiceImpl.getCommentsByBookId(bookId);
+    }
+
+    @ShellMethod(value = "Get list of comments by owner", key = {"listCommentsOwner", "lco"})
+    public List<Comment> getCommentsByOwner(@ShellOption String owner) {
+        return libraryServiceImpl.getCommentsByOwner(owner);
+    }
+
+    @ShellMethod(value = "Get list of comments by commentId", key = {"listCommentsId", "lci"})
+    public Comment getCommentsById(@ShellOption long commentId) {
+        return libraryServiceImpl.getCommentsById(commentId);
+    }
+
+    @ShellMethod(value = "Add new comment", key = {"addComment", "ac"})
+    public void addNewComment() {
+        libraryServiceImpl.addNewComment();
+    }
+
+    @ShellMethod(value = "Delete comment by id", key = {"deleteComment", "dc"})
+    public void deleteCommentById(@ShellOption long commentId) {
+        libraryServiceImpl.deleteCommentById(commentId);
     }
 }

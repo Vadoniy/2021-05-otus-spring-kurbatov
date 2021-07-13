@@ -5,18 +5,30 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
+@Entity
+@Table(name = "BOOK")
 public class Book {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "TITLE", nullable = false, unique = true)
     private String title;
 
+    @ManyToOne(targetEntity = Author.class, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JoinColumn(name = "AUTHOR_ID")
     private Author author;
 
+    @ManyToOne(targetEntity = Genre.class, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JoinColumn(name = "GENRE_ID")
     private Genre genre;
 
     public Book(String title, Author author, Genre genre) {
