@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.annotation.Rollback;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Genre;
@@ -25,7 +24,6 @@ class BookDaoJdbcTest {
     private TestEntityManager em;
 
     @Test
-    @Rollback
     void insert() {
         final var expectedAuthor = new Author(RandomString.make());
         final var expectedGenre = new Genre(RandomString.make());
@@ -42,7 +40,6 @@ class BookDaoJdbcTest {
     }
 
     @Test
-    @Rollback
     void getById() {
         final var expectedAuthor = new Author(RandomString.make());
         final var expectedGenre = new Genre(RandomString.make());
@@ -68,7 +65,6 @@ class BookDaoJdbcTest {
     }
 
     @Test
-    @Rollback
     void deleteById() {
         assertEquals(1, bookRepositoryJpql.getAll().size());
         bookRepositoryJpql.deleteById(1);
@@ -76,7 +72,6 @@ class BookDaoJdbcTest {
     }
 
     @Test
-    @Rollback
     void update() {
         final var newTitle = "Title";
         final var bookToUpdate = em.find(Book.class, 1L);

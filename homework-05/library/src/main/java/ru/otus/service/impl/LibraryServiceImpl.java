@@ -85,6 +85,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    @Transactional
     public void addNewAuthor() {
         displayServiceConsole.showText("Please, enter author's name:");
         final var name = displayServiceConsole.getInputString();
@@ -92,16 +93,19 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    @Transactional
     public void deleteAuthor(@ShellOption long id) {
         authorRepositoryJpql.deleteById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Author> getAuthors() {
         return authorRepositoryJpql.getAll();
     }
 
     @Override
+    @Transactional
     public void addNewGenre() {
         displayServiceConsole.showText("Please, enter author's genre:");
         final var genre = displayServiceConsole.getInputString();
@@ -109,30 +113,32 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    @Transactional
     public void deleteGenre(long id) {
         genreRepositoryJpql.deleteById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Genre> getGenres() {
         return genreRepositoryJpql.getAll();
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<Comment> getCommentsByBookId(long bookId) {
         return commentRepositoryJpql.getByBookId(bookId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Comment> getCommentsByOwner(String owner){
+    public List<Comment> getCommentsByOwner(String owner) {
         return commentRepositoryJpql.getByOwner(owner);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Comment getCommentsById(long id){
+    public Comment getCommentsById(long id) {
         return commentRepositoryJpql.getById(id);
     }
 

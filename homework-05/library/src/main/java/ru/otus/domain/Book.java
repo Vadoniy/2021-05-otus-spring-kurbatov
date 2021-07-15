@@ -14,6 +14,8 @@ import java.util.List;
 @EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "BOOK")
+@NamedEntityGraph(name = "author-genres-to-book-entity-graph",
+        attributeNodes = {@NamedAttributeNode("author"), @NamedAttributeNode("genre")})
 public class Book {
 
     @Id
@@ -23,11 +25,11 @@ public class Book {
     @Column(name = "TITLE", nullable = false, unique = true)
     private String title;
 
-    @ManyToOne(targetEntity = Author.class, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = Author.class, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "AUTHOR_ID")
     private Author author;
 
-    @ManyToOne(targetEntity = Genre.class, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = Genre.class, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "GENRE_ID")
     private Genre genre;
 

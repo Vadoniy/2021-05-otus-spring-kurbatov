@@ -1,10 +1,10 @@
 package ru.otus.repository.jpql;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import ru.otus.repository.BookRepository;
 import ru.otus.domain.Book;
+import ru.otus.repository.BookRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -29,14 +29,16 @@ public class BookRepositoryJpql implements BookRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<Book> getById(long id) {
         return Optional.ofNullable(em.find(Book.class, id));
     }
 
     @Override
     public List<Book> getAll() {
-        return em.createQuery("select b from Book b join b.author join b.genre", Book.class).getResultList();
+        final var entityGraph = em.getEntityGraph("author-genres-to-book-entity-graph");
+        final var query = em.createQuery("select b from Book b join b.author join b.genre", Book.class);
+        query.setHint(EntityGraph.EntityGraphType.FETCH.getKey(), entityGraph);
+        return query.getResultList();
     }
 
     @Override
