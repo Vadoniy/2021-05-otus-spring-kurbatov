@@ -125,7 +125,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Comment> getCommentsByBookId(long bookId) {
         return commentRepositoryJpql.getByBookId(bookId);
     }
@@ -138,7 +138,7 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     @Transactional(readOnly = true)
-    public Comment getCommentsById(long id) {
+    public Comment getCommentById(long id) {
         return commentRepositoryJpql.getById(id);
     }
 

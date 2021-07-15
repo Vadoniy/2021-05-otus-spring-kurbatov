@@ -33,7 +33,7 @@ public interface LibraryService {
 
     List<Comment> getCommentsByOwner(String owner);
 
-    Comment getCommentsById(long id);
+    Comment getCommentById(long id);
 
     void addNewComment();
 

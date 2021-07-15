@@ -1,13 +1,12 @@
 package ru.otus.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@ToString(exclude = {"book"})
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -25,7 +24,7 @@ public class Comment {
     @Column(name = "OWNER", nullable = false)
     private String owner;
 
-    @ManyToOne(targetEntity = Book.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Book.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "BOOK_ID")
     private Book book;
 
