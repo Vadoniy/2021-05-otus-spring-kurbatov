@@ -1,17 +1,17 @@
-package ru.otus.dao;
+package ru.otus.repository;
 
 
 import ru.otus.domain.Author;
 
 import java.util.List;
 
-public interface AuthorDao {
+public interface AuthorRepository {
 
     List<Author> getAll();
 
     Author getById(long id);
 
-    boolean insert(Author author);
+    Author insert(Author author);
 
     boolean deleteById(long id);
 }

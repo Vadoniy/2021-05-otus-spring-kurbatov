@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import ru.otus.dao.QuestionDao;
+import ru.otus.repository.QuestionDao;
 import ru.otus.domain.ExamQuestion;
 import ru.otus.exception.DisplayServiceException;
 import ru.otus.exception.ReadFileQuestionsException;

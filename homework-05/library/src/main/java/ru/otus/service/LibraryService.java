@@ -2,6 +2,7 @@ package ru.otus.service;
 
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
+import ru.otus.domain.Comment;
 import ru.otus.domain.Genre;
 
 import java.util.List;
@@ -27,4 +28,14 @@ public interface LibraryService {
     void deleteGenre(long id);
 
     List<Genre> getGenres();
+
+    List<Comment> getCommentsByBookId(long bookId);
+
+    List<Comment> getCommentsByOwner(String owner);
+
+    Comment getCommentById(long id);
+
+    void addNewComment();
+
+    void deleteCommentById(long id);
 }
