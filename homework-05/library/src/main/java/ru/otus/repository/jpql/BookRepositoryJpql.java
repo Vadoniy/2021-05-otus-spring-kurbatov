@@ -36,7 +36,7 @@ public class BookRepositoryJpql implements BookRepository {
     @Override
     public List<Book> getAll() {
         final var entityGraph = em.getEntityGraph("author-genres-to-book-entity-graph");
-        final var query = em.createQuery("select b from Book b join b.author join b.genre", Book.class);
+        final var query = em.createQuery("select b from Book b", Book.class);
         query.setHint(EntityGraph.EntityGraphType.FETCH.getKey(), entityGraph);
         return query.getResultList();
     }

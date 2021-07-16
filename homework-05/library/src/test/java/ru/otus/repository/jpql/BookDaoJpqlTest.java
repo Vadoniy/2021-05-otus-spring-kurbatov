@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Import({BookRepositoryJpql.class})
-class BookDaoJdbcTest {
+class BookDaoJpqlTest {
 
     @Autowired
     private BookRepository bookRepositoryJpql;
