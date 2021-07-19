@@ -79,9 +79,9 @@ public class LibraryShellCommands {
         return libraryService.getCommentsByOwner(owner);
     }
 
-    @ShellMethod(value = "Get list of comments by commentId", key = {"listCommentsId", "lci"})
+    @ShellMethod(value = "Get comment by commentId", key = {"listCommentsId", "lci"})
     public Comment getCommentsById(@ShellOption long commentId) {
-        return libraryService.getCommentById(commentId);
+        return libraryService.getCommentById(commentId).orElse(null);
     }
 
     @ShellMethod(value = "Add new comment", key = {"addComment", "ac"})

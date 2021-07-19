@@ -26,13 +26,13 @@ public class LibraryServiceImpl implements LibraryService {
 
     private final DisplayService displayServiceConsole;
 
-    private final BookRepository bookRepositoryJpql;
+    private final BookRepository bookRepository;
 
-    private final AuthorRepository authorRepositoryJpql;
+    private final AuthorRepository authorRepository;
 
-    private final GenreRepository genreRepositoryJpql;
+    private final GenreRepository genreRepository;
 
-    private final CommentRepository commentRepositoryJpql;
+    private final CommentRepository commentRepository;
 
     @Override
     @Transactional
@@ -44,12 +44,12 @@ public class LibraryServiceImpl implements LibraryService {
         displayServiceConsole.showText("Please, enter ID of genre of your book (you can find out genres ids by command):");
         final var genreId = getId(displayServiceConsole.getInputString());
         final var author = Optional.ofNullable(authorId)
-                .map(authorRepositoryJpql::getById)
+                .map(authorRepository::getById)
                 .orElse(null);
         final var genre = Optional.ofNullable(genreId)
-                .map(genreRepositoryJpql::getById)
+                .map(genreRepository::getById)
                 .orElse(null);
-        bookRepositoryJpql.insert(new Book(title, author, genre));
+        bookRepository.save(new Book(title, author, genre));
     }
 
     @Override
@@ -64,24 +64,24 @@ public class LibraryServiceImpl implements LibraryService {
         displayServiceConsole.showText("Please, enter ID of new genre of your book (you can find out genres ids by command):");
         final var genreId = getId(displayServiceConsole.getInputString());
         final var author = Optional.ofNullable(authorId)
-                .map(authorRepositoryJpql::getById)
+                .map(authorRepository::getById)
                 .orElse(null);
         final var genre = Optional.ofNullable(genreId)
-                .map(genreRepositoryJpql::getById)
+                .map(genreRepository::getById)
                 .orElse(null);
-        bookRepositoryJpql.update(new Book(bookId, title, author, genre));
+        bookRepository.save(new Book(bookId, title, author, genre));
     }
 
     @Override
     @Transactional
     public void deleteBook(long id) {
-        bookRepositoryJpql.deleteById(id);
+        bookRepository.deleteById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Book> getBooks() {
-        return bookRepositoryJpql.getAll();
+        return bookRepository.findAll();
     }
 
     @Override
@@ -89,19 +89,19 @@ public class LibraryServiceImpl implements LibraryService {
     public void addNewAuthor() {
         displayServiceConsole.showText("Please, enter author's name:");
         final var name = displayServiceConsole.getInputString();
-        authorRepositoryJpql.insert(new Author(name));
+        authorRepository.save(new Author(name));
     }
 
     @Override
     @Transactional
     public void deleteAuthor(@ShellOption long id) {
-        authorRepositoryJpql.deleteById(id);
+        authorRepository.deleteById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Author> getAuthors() {
-        return authorRepositoryJpql.getAll();
+        return authorRepository.findAll();
     }
 
     @Override
@@ -109,37 +109,37 @@ public class LibraryServiceImpl implements LibraryService {
     public void addNewGenre() {
         displayServiceConsole.showText("Please, enter author's genre:");
         final var genre = displayServiceConsole.getInputString();
-        genreRepositoryJpql.insert(new Genre(genre));
+        genreRepository.save(new Genre(genre));
     }
 
     @Override
     @Transactional
     public void deleteGenre(long id) {
-        genreRepositoryJpql.deleteById(id);
+        genreRepository.deleteById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Genre> getGenres() {
-        return genreRepositoryJpql.getAll();
+        return genreRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Comment> getCommentsByBookId(long bookId) {
-        return commentRepositoryJpql.getByBookId(bookId);
+        return commentRepository.findByBookId(bookId);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Comment> getCommentsByOwner(String owner) {
-        return commentRepositoryJpql.getByOwner(owner);
+        return commentRepository.findByOwner(owner);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Comment getCommentById(long id) {
-        return commentRepositoryJpql.getById(id);
+    public Optional<Comment> getCommentById(long id) {
+        return commentRepository.findById(id);
     }
 
     @Override
@@ -147,19 +147,19 @@ public class LibraryServiceImpl implements LibraryService {
     public void addNewComment() {
         displayServiceConsole.showText("Please, enter an ID of the book you want to comment:");
         final var bookId = getId(displayServiceConsole.getInputString());
-        final var book = bookRepositoryJpql.getById(bookId)
+        final var book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new UnknownBookException("Error to find book with id " + bookId));
         displayServiceConsole.showText("Please, enter your nickname:");
         final var nickname = displayServiceConsole.getInputString();
         displayServiceConsole.showText("What can you want to tell about the book?");
         final var comment = displayServiceConsole.getInputString();
-        commentRepositoryJpql.insert(new Comment(comment, nickname, book));
+        commentRepository.save(new Comment(comment, nickname, book));
     }
 
     @Override
     @Transactional
     public void deleteCommentById(long id) {
-        commentRepositoryJpql.deleteById(id);
+        commentRepository.deleteById(id);
     }
 
     private Long getId(String input) {
