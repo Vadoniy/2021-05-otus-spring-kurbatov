@@ -6,6 +6,7 @@ import ru.otus.domain.Comment;
 import ru.otus.domain.Genre;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface LibraryService {
 
@@ -33,7 +34,7 @@ public interface LibraryService {
 
     List<Comment> getCommentsByOwner(String owner);
 
-    Comment getCommentById(long id);
+    Optional<Comment> getCommentById(long id);
 
     void addNewComment();
 
