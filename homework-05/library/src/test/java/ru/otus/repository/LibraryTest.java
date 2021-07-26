@@ -3,18 +3,19 @@ package ru.otus.repository;
 import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Genre;
 import ru.otus.exception.UnknownBookException;
 
 import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
+@DataMongoTest
 class LibraryTest {
 
     @Autowired
@@ -50,28 +51,30 @@ class LibraryTest {
         bookRepository.save(expectedBook);
         final var newId = expectedBook.getId();
         assertFalse(idsBefore.contains(newId));
-        assertNotNull(bookRepository.getById(newId));
+        assertNotNull(bookRepository.findById(newId));
     }
 
     @Test
     void getAll() {
-        assertEquals(2, bookRepository.findAll().size());
+        assertEquals(3, bookRepository.findAll().size());
     }
 
     @Test
     void deleteById() {
         final var repoSizeBefore = bookRepository.findAll().size();
-        assertNotNull(bookRepository.findById(1L));
-        bookRepository.deleteById(1L);
+        final var randomId = bookRepository.findAll().get(new Random().nextInt(3)).getId();
+        assertNotNull(bookRepository.findById(randomId));
+        bookRepository.deleteById(randomId);
         final var repoSizeAfter = bookRepository.findAll().size();
         assertEquals(1, repoSizeBefore - repoSizeAfter);
-        assertThrows(NoSuchElementException.class, () -> bookRepository.findById(1L).get());
+        assertThrows(NoSuchElementException.class, () -> bookRepository.findById(randomId).get());
     }
 
     @Test
     void update() {
         final var newTitle = "Title";
-        final var bookToUpdate = bookRepository.findById(1L);
+        final var randomId = bookRepository.findAll().get(new Random().nextInt(3)).getId();
+        final var bookToUpdate = bookRepository.findById(randomId);
         bookToUpdate.ifPresentOrElse(
                 b -> {
                     assertNotEquals(newTitle, b.getTitle());
@@ -81,7 +84,7 @@ class LibraryTest {
                 () -> {
                     throw new UnknownBookException("There is no such book");
                 });
-        final var updatedBook = bookRepository.findById(1L);
+        final var updatedBook = bookRepository.findById(randomId);
         updatedBook.ifPresentOrElse(
                 b -> {
                     assertEquals(newTitle, b.getTitle());
@@ -124,10 +127,11 @@ class LibraryTest {
     @Test
     void deleteCommentById() {
         final var repoSizeBefore = commentRepository.findAll().size();
-        assertNotNull(commentRepository.findById(1L));
-        commentRepository.deleteById(1L);
+        final var randomId = commentRepository.findAll().get(new Random().nextInt(4)).getId();
+        assertNotNull(commentRepository.findById(randomId));
+        commentRepository.deleteById(randomId);
         final var repoSizeAfter = commentRepository.findAll().size();
         assertEquals(1, repoSizeBefore - repoSizeAfter);
-        assertThrows(NoSuchElementException.class, () -> commentRepository.findById(1L).get());
+        assertThrows(NoSuchElementException.class, () -> commentRepository.findById(randomId).get());
     }
 }
