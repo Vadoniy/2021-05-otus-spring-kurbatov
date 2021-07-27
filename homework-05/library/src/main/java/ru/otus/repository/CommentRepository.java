@@ -12,4 +12,8 @@ public interface CommentRepository extends MongoRepository<Comment, String> {
     List<Comment> findByOwner(String owner);
 
     void deleteById(long id);
+
+    boolean existsByBookId(String id);
+
+    void deleteByBookId(String id);
 }
