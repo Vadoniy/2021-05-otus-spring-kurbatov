@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new book</title>
+</head>
+<body>
+<form id="edit-form" method="post" action="/book/save">
+
+    <h1>Book Info:</h1>
+
+    <div class="row">
+        <label for="title-input">Title:</label>
+        <input id="title-input" name="title" type="text" value=""/>
+    </div>
+
+    <table>
+        <tr>
+            <td>Select author:</td>
+            <td>
+                <select id="author.id" name="author.id">
+                    <option value="">--</option>
+                    <option name="author" value="">RandomString.make()1</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td>Select genre:</td>
+            <td>
+                <select id="genre.id" name="genre.id">
+                    <option value="">--</option>
+                    <option name="genre" value="">RandomString.make()1</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <div class="row">
+        <button type="submit">Save</button>
+    </div>
+</form>
+</body>
+</html>

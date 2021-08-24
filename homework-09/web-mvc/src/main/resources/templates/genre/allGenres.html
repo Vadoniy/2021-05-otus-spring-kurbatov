@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All genres</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .genres, .genres td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<table class="genres">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="genre : ${genres}">
+        <td th:text="${genre.id}">0</td>
+        <td th:text="${genre.genreName}">Classic</td>
+        <td>
+            <a href="allGenres.html" th:href="@{/genre/delete(id=${genre.id})}">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div class="row">
+    <a href="/book/addGenre.html" th:href="@{/genre/new}">Add new genre</a>
+    <a href="/author/list">List authors</a>
+    <a href="/book/list">List books</a>
+</div>
+</body>
+</html>

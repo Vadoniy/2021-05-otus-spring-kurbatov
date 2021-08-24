@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new author</title>
+</head>
+<body>
+<form id="edit-form" th:action="@{/author/save}" th:method="post" action="/author/save">
+
+    <h1>Author Info:</h1>
+
+    <div class="row">
+        <label for="name-input">Name:</label>
+        <input id="name-input" name="name" th:value="${author.name}" type="text" value="Leo Tolstoy"/>
+    </div>
+    <div class="row">
+        <button type="submit">Save</button>
+    </div>
+</form>
+</body>
+</html>
