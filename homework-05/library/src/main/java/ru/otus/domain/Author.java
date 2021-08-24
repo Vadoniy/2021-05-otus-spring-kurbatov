@@ -1,30 +1,26 @@
 package ru.otus.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 @EqualsAndHashCode(of = "id")
-@Entity
-@Table(name = "AUTHOR")
+@Document("AUTHOR")
 public class Author {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id;
 
-    @Column(name = "NAME", nullable = false, unique = true)
+    @NotBlank
     private String name;
-
-    public Author(long id) {
-        this.id = id;
-    }
 
     public Author(String name) {
         this.name = name;

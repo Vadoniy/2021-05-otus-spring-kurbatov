@@ -29,7 +29,7 @@ public class LibraryShellCommands {
     }
 
     @ShellMethod(value = "Delete book from the library", key = {"deleteBook", "db"})
-    public void deleteBook(@ShellOption long bookId) {
+    public void deleteBook(@ShellOption String bookId) {
         libraryService.deleteBook(bookId);
     }
 
@@ -44,7 +44,7 @@ public class LibraryShellCommands {
     }
 
     @ShellMethod(value = "Delete author from the library's list", key = {"deleteAuthor", "da"})
-    public void deleteAuthor(@ShellOption long authorId) {
+    public void deleteAuthor(@ShellOption String authorId) {
         libraryService.deleteAuthor(authorId);
     }
 
@@ -59,7 +59,7 @@ public class LibraryShellCommands {
     }
 
     @ShellMethod(value = "Delete genre from the library's list", key = {"deleteGenre", "dg"})
-    public void deleteGenre(@ShellOption long genreId) {
+    public void deleteGenre(@ShellOption String genreId) {
         libraryService.deleteGenre(genreId);
     }
 
@@ -70,7 +70,7 @@ public class LibraryShellCommands {
 
 
     @ShellMethod(value = "Get list of comments by bookId", key = {"listCommentsBook", "lcb"})
-    public List<Comment> getCommentsByBookId(@ShellOption long bookId) {
+    public List<Comment> getCommentsByBookId(@ShellOption String bookId) {
         return libraryService.getCommentsByBookId(bookId);
     }
 
@@ -80,7 +80,7 @@ public class LibraryShellCommands {
     }
 
     @ShellMethod(value = "Get comment by commentId", key = {"listCommentsId", "lci"})
-    public Comment getCommentsById(@ShellOption long commentId) {
+    public Comment getCommentsById(@ShellOption String commentId) {
         return libraryService.getCommentById(commentId).orElse(null);
     }
 
@@ -90,7 +90,7 @@ public class LibraryShellCommands {
     }
 
     @ShellMethod(value = "Delete comment by id", key = {"deleteComment", "dc"})
-    public void deleteCommentById(@ShellOption long commentId) {
+    public void deleteCommentById(@ShellOption String commentId) {
         libraryService.deleteCommentById(commentId);
     }
 }

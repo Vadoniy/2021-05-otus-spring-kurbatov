@@ -1,31 +1,32 @@
 package ru.otus.domain;
 
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
-@ToString(exclude = {"book"})
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@ToString
 @EqualsAndHashCode(of = "id")
-@Entity
-@Table(name = "COMMENT")
+@Document("COMMENT")
 public class Comment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id;
 
-    @Column(name = "COMMENT", nullable = false)
+    @NotBlank
     private String comment;
 
-    @Column(name = "OWNER", nullable = false)
+    @NotBlank
     private String owner;
 
-    @ManyToOne(targetEntity = Book.class, fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "BOOK_ID")
+    @NotNull
     private Book book;
 
     public Comment(String comment, String owner, Book book) {

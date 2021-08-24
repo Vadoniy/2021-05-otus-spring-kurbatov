@@ -1,30 +1,26 @@
 package ru.otus.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 @EqualsAndHashCode(of = "id")
-@Entity
-@Table(name = "GENRE")
+@Document("GENRE")
 public class Genre {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id;
 
-    @Column(name = "GENRE", nullable = false, unique = true)
+    @NotBlank
     private String genre;
-
-    public Genre(long id) {
-        this.id = id;
-    }
 
     public Genre(String genre) {
         this.genre = genre;

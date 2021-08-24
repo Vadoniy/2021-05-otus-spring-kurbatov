@@ -14,29 +14,29 @@ public interface LibraryService {
 
     void updateBook();
 
-    void deleteBook(long id);
+    void deleteBook(String id);
 
     List<Book> getBooks();
 
     void addNewAuthor();
 
-    void deleteAuthor(long id);
+    void deleteAuthor(String id);
 
     List<Author> getAuthors();
 
     void addNewGenre();
 
-    void deleteGenre(long id);
+    void deleteGenre(String id);
 
     List<Genre> getGenres();
 
-    List<Comment> getCommentsByBookId(long bookId);
+    List<Comment> getCommentsByBookId(String bookId);
 
     List<Comment> getCommentsByOwner(String owner);
 
-    Optional<Comment> getCommentById(long id);
+    Optional<Comment> getCommentById(String id);
 
     void addNewComment();
 
-    void deleteCommentById(long id);
+    void deleteCommentById(String id);
 }

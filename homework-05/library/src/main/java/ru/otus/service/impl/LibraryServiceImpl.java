@@ -1,8 +1,6 @@
 package ru.otus.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.util.Strings;
-import org.springframework.shell.standard.ShellOption;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.Author;
@@ -44,12 +42,12 @@ public class LibraryServiceImpl implements LibraryService {
         displayServiceConsole.showText("Please, enter ID of genre of your book (you can find out genres ids by command):");
         final var genreId = getId(displayServiceConsole.getInputString());
         final var author = Optional.ofNullable(authorId)
-                .map(authorRepository::getById)
+                .map(authorRepository::findById)
                 .orElse(null);
         final var genre = Optional.ofNullable(genreId)
-                .map(genreRepository::getById)
+                .map(genreRepository::findById)
                 .orElse(null);
-        bookRepository.save(new Book(title, author, genre));
+        bookRepository.save(new Book(title, author.orElse(null), genre.orElse(null)));
     }
 
     @Override
@@ -64,17 +62,17 @@ public class LibraryServiceImpl implements LibraryService {
         displayServiceConsole.showText("Please, enter ID of new genre of your book (you can find out genres ids by command):");
         final var genreId = getId(displayServiceConsole.getInputString());
         final var author = Optional.ofNullable(authorId)
-                .map(authorRepository::getById)
+                .map(authorRepository::findById)
                 .orElse(null);
         final var genre = Optional.ofNullable(genreId)
-                .map(genreRepository::getById)
+                .map(genreRepository::findById)
                 .orElse(null);
-        bookRepository.save(new Book(bookId, title, author, genre));
+        bookRepository.save(new Book(bookId, title, author.orElse(null), genre.orElse(null)));
     }
 
     @Override
     @Transactional
-    public void deleteBook(long id) {
+    public void deleteBook(String id) {
         bookRepository.deleteById(id);
     }
 
@@ -94,7 +92,7 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     @Transactional
-    public void deleteAuthor(@ShellOption long id) {
+    public void deleteAuthor(String id) {
         authorRepository.deleteById(id);
     }
 
@@ -114,7 +112,7 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     @Transactional
-    public void deleteGenre(long id) {
+    public void deleteGenre(String id) {
         genreRepository.deleteById(id);
     }
 
@@ -126,7 +124,7 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Comment> getCommentsByBookId(long bookId) {
+    public List<Comment> getCommentsByBookId(String bookId) {
         return commentRepository.findByBookId(bookId);
     }
 
@@ -138,7 +136,7 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Comment> getCommentById(long id) {
+    public Optional<Comment> getCommentById(String id) {
         return commentRepository.findById(id);
     }
 
@@ -158,14 +156,11 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     @Transactional
-    public void deleteCommentById(long id) {
+    public void deleteCommentById(String id) {
         commentRepository.deleteById(id);
     }
 
-    private Long getId(String input) {
-        return Optional.ofNullable(input)
-                .filter(s -> !Strings.isBlank(s))
-                .map(Long::parseLong)
-                .orElse(null);
+    private String getId(String input) {
+        return input;
     }
 }
