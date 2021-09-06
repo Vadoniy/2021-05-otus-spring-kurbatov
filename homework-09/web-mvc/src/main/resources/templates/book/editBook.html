@@ -23,8 +23,8 @@
     </style>
 </head>
 <body>
-<form id="edit-form" th:action="@{/save-book(id=${book.id})}" th:method="post" action="editBook.html">
-    <h1>Book Info:</h1>
+<form id="edit-form" th:action="@{/book/save(id=${book.id})}" th:method="post" action="editBook.html">
+    <h1>Edit book info:</h1>
 
     <div class="row">
         <label for="id-input">ID:</label>
@@ -38,14 +38,21 @@
 
     <div class="row">
         <label for="author-input">Author:</label>
-        <input id="author-input" name="author" type="text" th:value="${book.author.id}" value="War&Peace"/>
+        <select th:field="${book.author.id}" id="author-input">
+            <option name="author" th:each="author : ${authors}"
+                    value="" th:value="${author.id}"
+                    th:utext="${author.name}"></option>
+        </select>
     </div>
 
     <div class="row">
         <label for="genre-input">Genre:</label>
-        <input id="genre-input" name="genre" type="text" th:value="${book.genre.id}" value="Classic"/>
+        <select th:field="${book.genre.id}" id="genre-input">
+            <option name="genre" th:each="genre : ${genres}"
+                    value="" th:value="${genre.id}"
+                    th:utext="${genre.getGenreName}"></option>
+        </select>
     </div>
-
     <div class="row">
         <button type="submit">Save</button>
     </div>

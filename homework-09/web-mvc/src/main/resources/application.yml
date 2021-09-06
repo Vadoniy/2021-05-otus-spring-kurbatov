@@ -7,7 +7,7 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: none
-
+  mvc.hiddenmethod.filter.enabled: true
 #    show-sql: true
 
 #  h2:

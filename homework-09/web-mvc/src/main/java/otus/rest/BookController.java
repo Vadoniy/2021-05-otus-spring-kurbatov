@@ -3,13 +3,8 @@ package otus.rest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import otus.domain.Author;
+import org.springframework.web.bind.annotation.*;
 import otus.domain.Book;
-import otus.domain.Genre;
 import otus.exception.UnknownAuthorException;
 import otus.exception.UnknownBookException;
 import otus.exception.UnknownGenreException;
@@ -39,31 +34,31 @@ public class BookController {
     public String editBook(@RequestParam("id") long id, Model model) {
         final var bookToEdit = bookService.getBookById(id)
                 .orElseThrow(() -> new UnknownBookException("No book with id " + id));
+        final var allAuthors = authorService.getAuthors();
+        final var allGenres = genreService.getGenres();
         model.addAttribute("book", bookToEdit);
+        model.addAttribute("authors", allAuthors);
+        model.addAttribute("genres", allGenres);
         return "/book/editBook";
     }
 
     @GetMapping("/new")
     public String addBook(Model model) {
-        final var genre = new Genre();
-        final var author = new Author();
         final var book = new Book();
         final var allAuthors = authorService.getAuthors();
         final var allGenres = genreService.getGenres();
         model.addAttribute("authors", allAuthors);
         model.addAttribute("genres", allGenres);
-        model.addAttribute("genre", genre);
-        model.addAttribute("author", author);
         model.addAttribute("book", book);
         return "/book/addBook";
     }
 
-    @GetMapping("/delete")
+    @DeleteMapping("/delete")
     public String deleteBook(@RequestParam("id") long id, Model model) {
         bookService.deleteBook(id);
         final var allBooks = bookService.getBooks();
         model.addAttribute("books", allBooks);
-        return "/book/allBooks";
+        return "redirect:" + "/book/list";
     }
 
     @PostMapping("/save")

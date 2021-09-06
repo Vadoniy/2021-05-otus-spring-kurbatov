@@ -15,7 +15,7 @@
     </style>
 </head>
 <body>
-<h1>Books:</h1>
+<h1>List of available books:</h1>
 
 <table class="books">
     <thead>
@@ -36,15 +36,17 @@
             <a href="editBook.html" th:href="@{/book/edit(id=${book.id})}">Edit</a>
         </td>
         <td>
-            <a href="allBooks.html" th:href="@{/book/delete(id=${book.id})}">Delete</a>
+            <form th:action="@{/book/delete(id=${book.id})}" th:method="delete">
+                <input type="submit" value="delete" />
+            </form>
         </td>
     </tr>
     </tbody>
 </table>
 <div class="row">
-    <a href="/book/addBook.html" th:href="@{/book/new}">Add new book</a>
-    <a href="/author/list">List authors</a>
-    <a href="/genre/list">List genres</a>
+    <a href="addBook.html" th:href="@{/book/new}">Add new book</a>
+    <a href="../author/allAuthors.html" th:href="@{../author/allAuthors.html}">List authors</a>
+    <a href="../genre/allGenres.html" th:href="@{../genre/allGenres.html}">List genres</a>
 </div>
 </body>
 </html>
