@@ -37,7 +37,7 @@
         </td>
         <td>
             <form th:action="@{/book/delete(id=${book.id})}" th:method="delete">
-                <input type="submit" value="delete" />
+                <input type="submit" value="Delete" />
             </form>
         </td>
     </tr>
@@ -45,8 +45,8 @@
 </table>
 <div class="row">
     <a href="addBook.html" th:href="@{/book/new}">Add new book</a>
-    <a href="../author/allAuthors.html" th:href="@{../author/allAuthors.html}">List authors</a>
-    <a href="../genre/allGenres.html" th:href="@{../genre/allGenres.html}">List genres</a>
+    <a href="../author/allAuthors.html" th:href="@{../author/list}">List authors</a>
+    <a href="../genre/allGenres.html" th:href="@{../genre/list}">List genres</a>
 </div>
 </body>
 </html>

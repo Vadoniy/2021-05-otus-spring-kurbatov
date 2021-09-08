@@ -28,7 +28,9 @@
         <td th:text="${author.id}">0</td>
         <td th:text="${author.name}">Pushkin</td>
         <td>
-            <a href="allAuthors.html" th:href="@{/author/delete(id=${author.id})}">Delete</a>
+            <form th:action="@{/author/delete(id=${author.id})}" th:method="delete">
+                <input type="submit" value="Delete"/>
+            </form>
         </td>
     </tr>
     </tbody>

@@ -4,26 +4,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import otus.domain.Author;
 import otus.domain.Genre;
-import otus.service.AuthorService;
 import otus.service.GenreService;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(path = "/genre")
+@RequestMapping
 public class GenreController {
 
     private final GenreService genreService;
 
-    @GetMapping("/list")
+    @GetMapping("/genre/list")
     public String getGenresList(Model model) {
         final var allGenres = genreService.getGenres();
         model.addAttribute("genres", allGenres);
         return "/genre/allGenres";
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/genre/delete")
     public String deleteGenre(@RequestParam("id") long id, Model model) {
         genreService.deleteGenre(id);
         final var allGenres = genreService.getGenres();
@@ -31,18 +29,18 @@ public class GenreController {
         return "redirect:" + "/genre/list";
     }
 
-    @GetMapping("/new")
+    @GetMapping("/genre/new")
     public String addGenre(Model model) {
         final var genre = new Genre();
         model.addAttribute("genre", genre);
         return "/genre/addGenre";
     }
 
-    @PostMapping("/save")
+    @PostMapping("/genre/save")
     public String addGenre(Genre genre, Model model) {
         genreService.addNewGenre(genre);
         final var allGenres = genreService.getGenres();
         model.addAttribute("genres", allGenres);
-        return "/genre/allGenres";
+        return "redirect:" + "/genre/list";
     }
 }

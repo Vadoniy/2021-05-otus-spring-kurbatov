@@ -14,7 +14,7 @@ import otus.service.GenreService;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(path = "book")
+@RequestMapping
 public class BookController {
 
     private final AuthorService authorService;
@@ -23,14 +23,14 @@ public class BookController {
 
     private final GenreService genreService;
 
-    @GetMapping("/list")
+    @GetMapping("/book/list")
     public String getBooksList(Model model) {
         final var allBooks = bookService.getBooks();
         model.addAttribute("books", allBooks);
         return "/book/allBooks";
     }
 
-    @GetMapping("/edit")
+    @GetMapping("/book/edit")
     public String editBook(@RequestParam("id") long id, Model model) {
         final var bookToEdit = bookService.getBookById(id)
                 .orElseThrow(() -> new UnknownBookException("No book with id " + id));
@@ -42,7 +42,7 @@ public class BookController {
         return "/book/editBook";
     }
 
-    @GetMapping("/new")
+    @GetMapping("/book/new")
     public String addBook(Model model) {
         final var book = new Book();
         final var allAuthors = authorService.getAuthors();
@@ -53,7 +53,7 @@ public class BookController {
         return "/book/addBook";
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/book/delete")
     public String deleteBook(@RequestParam("id") long id, Model model) {
         bookService.deleteBook(id);
         final var allBooks = bookService.getBooks();
@@ -61,7 +61,7 @@ public class BookController {
         return "redirect:" + "/book/list";
     }
 
-    @PostMapping("/save")
+    @PostMapping("/book/save")
     public String saveBook(Book book, Model model) {
         final var author = authorService.getAuthorById(book.getAuthor().getId())
                 .orElseThrow(() -> new UnknownAuthorException("There is no author with id " + book.getAuthor().getId()));
@@ -73,6 +73,6 @@ public class BookController {
         final var allBooks = bookService.getBooks();
         model.addAttribute(savedBook);
         model.addAttribute("books", allBooks);
-        return "/book/allBooks";
+        return "redirect:" + "/book/list";
     }
 }

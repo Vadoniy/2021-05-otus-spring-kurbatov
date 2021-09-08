@@ -28,7 +28,9 @@
         <td th:text="${genre.id}">0</td>
         <td th:text="${genre.genreName}">Classic</td>
         <td>
-            <a href="allGenres.html" th:href="@{/genre/delete(id=${genre.id})}">Delete</a>
+            <form th:action="@{/genre/delete(id=${genre.id})}" th:method="delete">
+                <input type="submit" value="Delete"/>
+            </form>
         </td>
     </tr>
     </tbody>

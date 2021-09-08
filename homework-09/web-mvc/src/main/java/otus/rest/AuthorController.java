@@ -9,19 +9,19 @@ import otus.service.AuthorService;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(path = "/author")
+@RequestMapping
 public class AuthorController {
 
     private final AuthorService authorService;
 
-    @GetMapping("/list")
+    @GetMapping("/author/list")
     public String getAuthorsList(Model model) {
         final var allAuthors = authorService.getAuthors();
         model.addAttribute("authors", allAuthors);
         return "/author/allAuthors";
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/author/delete")
     public String deleteAuthor(@RequestParam("id") long id, Model model) {
         authorService.deleteAuthor(id);
         final var allAuthors = authorService.getAuthors();
@@ -29,14 +29,14 @@ public class AuthorController {
         return "redirect:" + "/author/list";
     }
 
-    @GetMapping("/new")
+    @GetMapping("/author/new")
     public String addAuthor(Model model) {
         final var author = new Author();
         model.addAttribute("author", author);
         return "/author/addAuthor";
     }
 
-    @PostMapping("/save")
+    @PostMapping("/author/save")
     public String addAuthor(Author author, Model model) {
         authorService.addNewAuthor(author);
         final var allAuthors = authorService.getAuthors();
