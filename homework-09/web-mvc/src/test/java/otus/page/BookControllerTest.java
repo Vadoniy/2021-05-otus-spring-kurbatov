@@ -101,7 +101,6 @@ class BookControllerTest {
         given(bookService.getBooks())
                 .willReturn(bookList);
         mockMvc.perform(delete("/book/delete?id=" + bookId))
-                .andExpect(status().isFound())
-                .andExpect(content().string(""));
+                .andExpect(status().isNotFound());
     }
 }
