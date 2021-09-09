@@ -56,8 +56,6 @@ public class BookController {
     @DeleteMapping("/book/delete")
     public String deleteBook(@RequestParam("id") long id, Model model) {
         bookService.deleteBook(id);
-        final var allBooks = bookService.getBooks();
-        model.addAttribute("books", allBooks);
         return "redirect:" + "/book/list";
     }
 
@@ -69,10 +67,7 @@ public class BookController {
                 .orElseThrow(() -> new UnknownGenreException("There is no genre with id " + book.getGenre().getId()));
         book.setAuthor(author);
         book.setGenre(genre);
-        final var savedBook = bookService.saveBook(book);
-        final var allBooks = bookService.getBooks();
-        model.addAttribute(savedBook);
-        model.addAttribute("books", allBooks);
+        bookService.saveBook(book);
         return "redirect:" + "/book/list";
     }
 }

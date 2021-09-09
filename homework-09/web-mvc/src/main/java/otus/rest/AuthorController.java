@@ -24,8 +24,6 @@ public class AuthorController {
     @DeleteMapping("/author/delete")
     public String deleteAuthor(@RequestParam("id") long id, Model model) {
         authorService.deleteAuthor(id);
-        final var allAuthors = authorService.getAuthors();
-        model.addAttribute("authors", allAuthors);
         return "redirect:" + "/author/list";
     }
 
@@ -39,8 +37,6 @@ public class AuthorController {
     @PostMapping("/author/save")
     public String addAuthor(Author author, Model model) {
         authorService.addNewAuthor(author);
-        final var allAuthors = authorService.getAuthors();
-        model.addAttribute("authors", allAuthors);
-        return "/author/allAuthors";
+        return "redirect:" + "/author/list";
     }
 }

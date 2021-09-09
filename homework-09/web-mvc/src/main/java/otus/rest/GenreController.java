@@ -24,8 +24,6 @@ public class GenreController {
     @DeleteMapping("/genre/delete")
     public String deleteGenre(@RequestParam("id") long id, Model model) {
         genreService.deleteGenre(id);
-        final var allGenres = genreService.getGenres();
-        model.addAttribute("genres", allGenres);
         return "redirect:" + "/genre/list";
     }
 
@@ -39,8 +37,6 @@ public class GenreController {
     @PostMapping("/genre/save")
     public String addGenre(Genre genre, Model model) {
         genreService.addNewGenre(genre);
-        final var allGenres = genreService.getGenres();
-        model.addAttribute("genres", allGenres);
         return "redirect:" + "/genre/list";
     }
 }
