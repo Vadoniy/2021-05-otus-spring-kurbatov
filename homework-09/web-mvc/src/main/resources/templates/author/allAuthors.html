@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List of all authors</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .authors, .authors td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<table class="authors">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="author : ${authors}">
+        <td th:text="${author.id}">0</td>
+        <td th:text="${author.name}">Pushkin</td>
+        <td>
+            <form th:action="@{/author/delete(id=${author.id})}" th:method="delete">
+                <input type="submit" value="Delete"/>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div class="row">
+    <a href="addAuthor.html" th:href="@{/author/new}">Add new author</a>
+    <a href="../genre/allGenres.html" th:href="@{/genre/list}">List genres</a>
+    <a href="../book/allBooks.html" th:href="@{/book/list}">List books</a>
+</div>
+</body>
+</html>

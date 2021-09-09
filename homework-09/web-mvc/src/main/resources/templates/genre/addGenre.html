@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new genre</title>
+</head>
+<body>
+<form id="edit-form" th:action="@{/genre/save}" th:method="post" action="/genre/save">
+
+    <h1>Genre Info:</h1>
+
+    <div class="row">
+        <label for="genre-input">Genre:</label>
+        <input id="genre-input" name="genreName" th:value="${genre.genreName}" type="text" value="Horror"/>
+    </div>
+    <div class="row">
+        <button type="submit">Save</button>
+    </div>
+</form>
+</body>
+</html>

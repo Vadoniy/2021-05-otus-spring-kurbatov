@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new book</title>
+</head>
+<body>
+<h1>Add new book:</h1>
+<form id="edit-form" th:action="@{/book/save}" th:method="post" action="/book/save">
+
+    <div class="row">
+        <label for="title-input">Title:</label>
+        <input id="title-input" name="title" th:value="${book.title}" type="text" value="War&Peace"/>
+    </div>
+
+    <table>
+        <tr>
+            <td>Select author:</td>
+            <td>
+                <select th:field="${book.author.id}">
+                    <option value="">--</option>
+                    <option name="author" th:each="author : ${authors}"
+                            th:value="${author.id}"
+                            th:utext="${author.name}"/>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td>Select genre:</td>
+            <td>
+                <select th:field="${book.genre.id}">
+                    <option value="">--</option>
+                    <option name="genre" th:each="genre : ${genres}"
+                            th:value="${genre.id}"
+                            th:utext="${genre.getGenreName}"/>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <div class="row">
+        <button type="submit">Save</button>
+    </div>
+</form>
+</body>
+</html>
