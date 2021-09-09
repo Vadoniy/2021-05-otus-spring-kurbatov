@@ -13,8 +13,11 @@
             padding: 5px;
         }
     </style>
+    <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
+<h1>List of available genres:</h1>
+
 <table class="genres">
     <thead>
     <tr>
@@ -23,18 +26,39 @@
         <th>Action</th>
     </tr>
     </thead>
-    <tbody>
-    <tr th:each="genre : ${genres}">
-        <td th:text="${genre.id}">0</td>
-        <td th:text="${genre.genreName}">Classic</td>
-        <td>
-            <form th:action="@{/genre/delete(id=${genre.id})}" th:method="delete">
-                <input type="submit" value="Delete"/>
-            </form>
-        </td>
-    </tr>
+    <tbody id="tableGenres">
     </tbody>
 </table>
+<script>
+    $(listGenres);
+
+    function listGenres() {
+        $.get('/api/genre/list').done(function (genres) {
+            genres.forEach(function (genre) {
+                $('tbody').append(`
+                    <tr>
+                        <td>${genre.id}</td>
+                        <td>${genre.genreName}</td>
+                        <td>
+                            <button onClick="deleteGenre(${genre.id})">Delete</button>
+                        </td>
+                    </tr>
+                `)
+            });
+        })
+    }
+
+    function deleteGenre(id) {
+        $.ajax({
+            url: '/api/genre/delete/' + id,
+            type: 'DELETE',
+            success: function () {
+                $('#tableGenres').empty()
+                listGenres();
+            }
+        });
+    }
+</script>
 <div class="row">
     <a href="addGenre.html" th:href="@{/genre/new}">Add new genre</a>
     <a href="../author/allAuthors.html" th:href="@{/author/list}">List authors</a>

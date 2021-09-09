@@ -1,4 +1,4 @@
-package otus.rest;
+package otus.page;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -51,12 +51,6 @@ public class BookController {
         model.addAttribute("genres", allGenres);
         model.addAttribute("book", book);
         return "/book/addBook";
-    }
-
-    @DeleteMapping("/book/delete")
-    public String deleteBook(@RequestParam("id") long id, Model model) {
-        bookService.deleteBook(id);
-        return "redirect:" + "/book/list";
     }
 
     @PostMapping("/book/save")

@@ -13,6 +13,7 @@
             padding: 5px;
         }
     </style>
+    <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
 <h1>List of available books:</h1>
@@ -26,23 +27,44 @@
         <th>Genre</th>
     </tr>
     </thead>
-    <tbody>
-    <tr th:each="book : ${books}">
-        <td th:text="${book.id}">1</td>
-        <td th:text="${book.title}">War and Peace</td>
-        <td th:text="${book.author.name}">Leo Tolstoy</td>
-        <td th:text="${book.genre.getGenreName}">Classic</td>
-        <td>
-            <a href="editBook.html" th:href="@{/book/edit(id=${book.id})}">Edit</a>
-        </td>
-        <td>
-            <form th:action="@{/book/delete(id=${book.id})}" th:method="delete">
-                <input type="submit" value="Delete" />
-            </form>
-        </td>
-    </tr>
+    <tbody id="tableBooks">
     </tbody>
 </table>
+<script>
+    $(listBooks);
+
+    function listBooks() {
+        $.get('/api/book/list').done(function (books) {
+            books.forEach(function (book) {
+                $('tbody').append(`
+                    <tr>
+                        <td>${book.id}</td>
+                        <td>${book.title}</td>
+                        <td>${book.author.name}</td>
+                        <td>${book.genre.genreName}</td>
+                        <td>
+                            <a href="/book/edit?id=${book.id}">Edit</a>
+                        </td>
+                        <td>
+                            <button onClick="deleteBook(${book.id})">Delete</button>
+                        </td>
+                    </tr>
+                `)
+            });
+        })
+    }
+
+    function deleteBook(id) {
+        $.ajax({
+            url: '/api/book/delete/' + id,
+            type: 'DELETE',
+            success: function () {
+                $('#tableBooks').empty()
+                listBooks();
+            }
+        });
+    }
+</script>
 <div class="row">
     <a href="addBook.html" th:href="@{/book/new}">Add new book</a>
     <a href="../author/allAuthors.html" th:href="@{../author/list}">List authors</a>

@@ -1,4 +1,4 @@
-package otus.rest;
+package otus.page;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

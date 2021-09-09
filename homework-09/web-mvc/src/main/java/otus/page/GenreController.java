@@ -1,4 +1,4 @@
-package otus.rest;
+package otus.page;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -21,12 +21,6 @@ public class GenreController {
         return "/genre/allGenres";
     }
 
-    @DeleteMapping("/genre/delete")
-    public String deleteGenre(@RequestParam("id") long id, Model model) {
-        genreService.deleteGenre(id);
-        return "redirect:" + "/genre/list";
-    }
-
     @GetMapping("/genre/new")
     public String addGenre(Model model) {
         final var genre = new Genre();
@@ -35,7 +29,7 @@ public class GenreController {
     }
 
     @PostMapping("/genre/save")
-    public String addGenre(Genre genre, Model model) {
+    public String addGenre(Genre genre) {
         genreService.addNewGenre(genre);
         return "redirect:" + "/genre/list";
     }
