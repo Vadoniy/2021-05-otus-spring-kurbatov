@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Add new genre</title>
+    <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-<form id="edit-form" th:action="@{/genre/save}" th:method="post" action="/genre/save">
+<form id="edit-form" onsubmit="saveGenre()" name="genre">
 
     <h1>Genre Info:</h1>
 
@@ -17,5 +18,22 @@
         <button type="submit">Save</button>
     </div>
 </form>
+<script>
+    function saveGenre() {
+        var data = {};
+        data["genreName"] = $("#genre-input").val();
+
+        $.ajax({
+            type: 'POST',
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(data),
+            url: '/api/genre',
+            success: function (data) {
+                window.location.replace('/genre');
+            }
+        });
+    }
+</script>
 </body>
 </html>

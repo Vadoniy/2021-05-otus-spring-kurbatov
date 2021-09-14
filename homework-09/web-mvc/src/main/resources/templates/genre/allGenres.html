@@ -29,11 +29,22 @@
     <tbody id="tableGenres">
     </tbody>
 </table>
+<div class="row">
+    <form action="/genre" method="post">
+        <button type="submit" name="addNewGenre">Add new genre</button>
+    </form>
+    <a href="/author">
+        <button>List authors</button>
+    </a>
+    <a href="/book">
+        <button>List books</button>
+    </a>
+</div>
 <script>
     $(listGenres);
 
     function listGenres() {
-        $.get('/api/genre/list').done(function (genres) {
+        $.get('/api/genre').done(function (genres) {
             genres.forEach(function (genre) {
                 $('tbody').append(`
                     <tr>
@@ -50,7 +61,7 @@
 
     function deleteGenre(id) {
         $.ajax({
-            url: '/api/genre/delete/' + id,
+            url: '/api/genre/' + id,
             type: 'DELETE',
             success: function () {
                 $('#tableGenres').empty()
@@ -59,10 +70,5 @@
         });
     }
 </script>
-<div class="row">
-    <a href="addGenre.html" th:href="@{/genre/new}">Add new genre</a>
-    <a href="../author/allAuthors.html" th:href="@{/author/list}">List authors</a>
-    <a href="../book/allBooks.html" th:href="@{/book/list}">List books</a>
-</div>
 </body>
 </html>

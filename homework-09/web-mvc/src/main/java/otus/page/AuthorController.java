@@ -16,21 +16,15 @@ public class AuthorController {
 
     private final AuthorService authorService;
 
-    @GetMapping("/author/list")
+    @GetMapping("/author")
     public String getAuthorsList() {
         return "/author/allAuthors";
     }
 
-    @GetMapping("/author/new")
+    @PostMapping("/author")
     public String addAuthor(Model model) {
         final var author = new Author();
         model.addAttribute("author", author);
         return "/author/addAuthor";
-    }
-
-    @PostMapping("/author/save")
-    public String addAuthor(Author author) {
-        authorService.addNewAuthor(author);
-        return "redirect:" + "/author/list";
     }
 }

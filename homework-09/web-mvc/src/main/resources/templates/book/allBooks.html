@@ -30,11 +30,22 @@
     <tbody id="tableBooks">
     </tbody>
 </table>
+<div class="row">
+    <form action="/book" method="post">
+        <button type="submit" name="addNewBook">Add new book</button>
+    </form>
+    <a href="/author">
+        <button>List authors</button>
+    </a>
+    <a href="/genre">
+        <button>List genres</button>
+    </a>
+</div>
 <script>
     $(listBooks);
 
     function listBooks() {
-        $.get('/api/book/list').done(function (books) {
+        $.get('/api/book').done(function (books) {
             books.forEach(function (book) {
                 $('tbody').append(`
                     <tr>
@@ -43,7 +54,7 @@
                         <td>${book.author.name}</td>
                         <td>${book.genre.genreName}</td>
                         <td>
-                            <a href="/book/edit?id=${book.id}">Edit</a>
+                            <button onClick="editBook(${book.id})">Edit</button>
                         </td>
                         <td>
                             <button onClick="deleteBook(${book.id})">Delete</button>
@@ -54,9 +65,13 @@
         })
     }
 
+    function editBook(id) {
+        window.location.href = "/book/" + id;
+    }
+
     function deleteBook(id) {
         $.ajax({
-            url: '/api/book/delete/' + id,
+            url: '/api/book/' + id,
             type: 'DELETE',
             success: function () {
                 $('#tableBooks').empty()
@@ -65,10 +80,5 @@
         });
     }
 </script>
-<div class="row">
-    <a href="addBook.html" th:href="@{/book/new}">Add new book</a>
-    <a href="../author/allAuthors.html" th:href="@{../author/list}">List authors</a>
-    <a href="../genre/allGenres.html" th:href="@{../genre/list}">List genres</a>
-</div>
 </body>
 </html>

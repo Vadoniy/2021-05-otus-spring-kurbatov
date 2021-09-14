@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Add new book</title>
+    <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
 <h1>Add new book:</h1>
-<form id="edit-form" th:action="@{/book/save}" th:method="post" action="/book/save">
+<form id="edit-form" onsubmit="saveBook()" name="book">
 
     <div class="row">
         <label for="title-input">Title:</label>
@@ -17,7 +18,7 @@
         <tr>
             <td>Select author:</td>
             <td>
-                <select th:field="${book.author.id}">
+                <select th:field="${book.author.id}" id="author-input">
                     <option value="">--</option>
                     <option name="author" th:each="author : ${authors}"
                             th:value="${author.id}"
@@ -31,7 +32,7 @@
         <tr>
             <td>Select genre:</td>
             <td>
-                <select th:field="${book.genre.id}">
+                <select th:field="${book.genre.id}" id="genre-input">
                     <option value="">--</option>
                     <option name="genre" th:each="genre : ${genres}"
                             th:value="${genre.id}"
@@ -45,5 +46,24 @@
         <button type="submit">Save</button>
     </div>
 </form>
+<script>
+    function saveBook() {
+        var data = {};
+        data["title"] = $("#title-input").val();
+        data["author"] = parseInt($("#author-input").val());
+        data["genre"] = parseInt($("#genre-input").val());
+
+        $.ajax({
+            type: 'POST',
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(data),
+            url: '/api/book',
+            success: function (data) {
+                window.location.replace('/book');
+            }
+        });
+    }
+</script>
 </body>
 </html>

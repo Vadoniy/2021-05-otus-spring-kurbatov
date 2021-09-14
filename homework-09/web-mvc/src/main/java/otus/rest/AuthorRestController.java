@@ -1,11 +1,11 @@
 package otus.rest;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import otus.domain.Author;
 import otus.rest.dto.AuthorDto;
 import otus.service.AuthorService;
 
@@ -18,15 +18,21 @@ public class AuthorRestController {
 
     private final AuthorService authorService;
 
-    @GetMapping("/api/author/list")
+    @GetMapping("/api/author")
     public List<AuthorDto> getAllAuthors() {
         return authorService.getAuthors().stream()
                 .map(AuthorDto::toDto)
                 .collect(Collectors.toList());
     }
 
-    @DeleteMapping("/api/author/delete/{id}")
+    @DeleteMapping("/api/author/{id}")
     public void deleteAuthor(@PathVariable("id") long id) {
         authorService.deleteAuthor(id);
+    }
+
+    @PostMapping(value = "/api/author", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> saveAuthor(@RequestBody Author author) {
+        authorService.addNewAuthor(author);
+        return ResponseEntity.ok(HttpStatus.MOVED_PERMANENTLY);
     }
 }
