@@ -1,9 +1,9 @@
 package ru.otus.service;
 
-import ru.otus.domain.Author;
-import ru.otus.domain.Book;
-import ru.otus.domain.Comment;
-import ru.otus.domain.Genre;
+import ru.otus.domain.mongo.Author;
+import ru.otus.domain.mongo.Book;
+import ru.otus.domain.mongo.Comment;
+import ru.otus.domain.mongo.Genre;
 
 import java.util.List;
 import java.util.Optional;

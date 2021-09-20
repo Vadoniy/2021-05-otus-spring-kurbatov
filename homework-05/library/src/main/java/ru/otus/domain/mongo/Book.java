@@ -1,4 +1,4 @@
-package ru.otus.domain;
+package ru.otus.domain.mongo;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;

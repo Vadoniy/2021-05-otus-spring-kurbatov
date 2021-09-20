@@ -1,4 +1,4 @@
-package ru.otus.domain;
+package ru.otus.domain.mongo;
 
 import com.opencsv.bean.CsvBindByPosition;
 import lombok.Getter;

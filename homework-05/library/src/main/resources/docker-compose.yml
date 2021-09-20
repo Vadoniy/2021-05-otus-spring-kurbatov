@@ -9,3 +9,13 @@ services:
       MONGO_INITDB_ROOT_PASSWORD:
     ports:
       - 27017:27017
+  postgres:
+    image: postgres
+    restart: on-failure
+    container_name: "batch"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=batch
+    ports:
+      - 15432:5432

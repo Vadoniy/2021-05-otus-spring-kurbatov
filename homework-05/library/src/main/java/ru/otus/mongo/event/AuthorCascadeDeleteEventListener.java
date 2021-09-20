@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.AfterDeleteEvent;
 import org.springframework.stereotype.Component;
-import ru.otus.domain.Author;
-import ru.otus.repository.BookRepository;
+import ru.otus.domain.mongo.Author;
+import ru.otus.repository.mongo.BookRepository;
 
 import java.util.Optional;
 

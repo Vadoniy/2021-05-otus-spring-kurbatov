@@ -4,10 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
-import ru.otus.domain.Author;
-import ru.otus.domain.Book;
-import ru.otus.domain.Comment;
-import ru.otus.domain.Genre;
+import ru.otus.batch.MigrationService;
+import ru.otus.domain.mongo.Author;
+import ru.otus.domain.mongo.Book;
+import ru.otus.domain.mongo.Comment;
+import ru.otus.domain.mongo.Genre;
 import ru.otus.service.LibraryService;
 
 import java.util.List;
@@ -17,6 +18,18 @@ import java.util.List;
 public class LibraryShellCommands {
 
     private final LibraryService libraryService;
+
+    private final MigrationService migrationService;
+
+    @ShellMethod(value = "Migrate DB from mongo to relative DB", key = {"migrate", "mdb"})
+    public void migrateDB() throws Exception {
+        migrationService.startMigration();
+    }
+
+    @ShellMethod(value = "Restart failed job by id", key = {"restartJob", "rj"})
+    public void restartJob(long jobExecutionId) throws Exception {
+        migrationService.restartJob(jobExecutionId);
+    }
 
     @ShellMethod(value = "Add new book to the library", key = {"addBook", "ab"})
     public void addBook() {
