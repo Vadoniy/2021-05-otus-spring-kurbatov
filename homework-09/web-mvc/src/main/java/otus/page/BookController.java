@@ -1,13 +1,14 @@
-package otus.rest;
+package otus.page;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import otus.domain.Book;
-import otus.exception.UnknownAuthorException;
 import otus.exception.UnknownBookException;
-import otus.exception.UnknownGenreException;
 import otus.service.AuthorService;
 import otus.service.BookService;
 import otus.service.GenreService;
@@ -23,15 +24,15 @@ public class BookController {
 
     private final GenreService genreService;
 
-    @GetMapping("/book/list")
+    @GetMapping("/book")
     public String getBooksList(Model model) {
         final var allBooks = bookService.getBooks();
         model.addAttribute("books", allBooks);
         return "/book/allBooks";
     }
 
-    @GetMapping("/book/edit")
-    public String editBook(@RequestParam("id") long id, Model model) {
+    @GetMapping("/book/{id}")
+    public String editBook(@PathVariable("id") long id, Model model) {
         final var bookToEdit = bookService.getBookById(id)
                 .orElseThrow(() -> new UnknownBookException("No book with id " + id));
         final var allAuthors = authorService.getAuthors();
@@ -42,7 +43,7 @@ public class BookController {
         return "/book/editBook";
     }
 
-    @GetMapping("/book/new")
+    @PostMapping("/book")
     public String addBook(Model model) {
         final var book = new Book();
         final var allAuthors = authorService.getAuthors();
@@ -51,23 +52,5 @@ public class BookController {
         model.addAttribute("genres", allGenres);
         model.addAttribute("book", book);
         return "/book/addBook";
-    }
-
-    @DeleteMapping("/book/delete")
-    public String deleteBook(@RequestParam("id") long id, Model model) {
-        bookService.deleteBook(id);
-        return "redirect:" + "/book/list";
-    }
-
-    @PostMapping("/book/save")
-    public String saveBook(Book book, Model model) {
-        final var author = authorService.getAuthorById(book.getAuthor().getId())
-                .orElseThrow(() -> new UnknownAuthorException("There is no author with id " + book.getAuthor().getId()));
-        final var genre = genreService.getGenreById(book.getGenre().getId())
-                .orElseThrow(() -> new UnknownGenreException("There is no genre with id " + book.getGenre().getId()));
-        book.setAuthor(author);
-        book.setGenre(genre);
-        bookService.saveBook(book);
-        return "redirect:" + "/book/list";
     }
 }

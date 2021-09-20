@@ -1,4 +1,4 @@
-package otus.rest;
+package otus.page;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +18,7 @@ import java.util.Optional;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,7 +49,7 @@ class BookControllerTest {
         }
         given(bookService.getBooks())
                 .willReturn(bookList);
-        mockMvc.perform(get("/book/list"))
+        mockMvc.perform(get("/book"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("<h1>List of available books:</h1>")));
     }
@@ -64,7 +63,7 @@ class BookControllerTest {
                                 new Book("RandomString.make()" + bookId,
                                         new Author("RandomString.make()" + bookId),
                                         new Genre("RandomString.make()" + bookId))));
-        mockMvc.perform(get("/book/edit?id=" + bookId))
+        mockMvc.perform(get("/book/" + bookId))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("<h1>Edit book info:</h1>")));
     }
@@ -81,7 +80,7 @@ class BookControllerTest {
         genresList.add(new Genre("RandomString.make()" + amountOfGenres));
         given(genreService.getGenres())
                 .willReturn(genresList);
-        mockMvc.perform(get("/book/new"))
+        mockMvc.perform(post("/book"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("<h1>Add new book:</h1>")));
     }
@@ -100,8 +99,7 @@ class BookControllerTest {
                 .deleteBook(bookId);
         given(bookService.getBooks())
                 .willReturn(bookList);
-        mockMvc.perform(delete("/book/delete?id=" + bookId))
-                .andExpect(status().isFound())
-                .andExpect(content().string(""));
+        mockMvc.perform(delete("/api/book/" + bookId))
+                .andExpect(status().isOk());
     }
 }
