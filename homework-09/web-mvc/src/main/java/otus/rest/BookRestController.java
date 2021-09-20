@@ -47,6 +47,6 @@ public class BookRestController {
         book.setAuthor(author);
         book.setGenre(genre);
         bookService.saveBook(book);
-        return ResponseEntity.ok(HttpStatus.MOVED_PERMANENTLY);
+        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 }

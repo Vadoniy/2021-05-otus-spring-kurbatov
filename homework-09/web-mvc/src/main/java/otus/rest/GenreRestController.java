@@ -33,6 +33,6 @@ public class GenreRestController {
     @PostMapping(value = "/api/genre", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveAuthor(@RequestBody Genre genre) {
         genreService.addNewGenre(genre);
-        return ResponseEntity.ok(HttpStatus.MOVED_PERMANENTLY);
+        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 }

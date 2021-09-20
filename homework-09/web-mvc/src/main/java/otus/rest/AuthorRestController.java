@@ -33,6 +33,6 @@ public class AuthorRestController {
     @PostMapping(value = "/api/author", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveAuthor(@RequestBody Author author) {
         authorService.addNewAuthor(author);
-        return ResponseEntity.ok(HttpStatus.MOVED_PERMANENTLY);
+        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 }
