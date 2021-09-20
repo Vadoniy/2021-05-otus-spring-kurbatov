@@ -1,6 +1,6 @@
-package ru.otus.repository;
+package ru.otus.repository.mongo;
 
-import ru.otus.domain.ExamQuestion;
+import ru.otus.domain.mongo.ExamQuestion;
 
 import java.util.List;
 

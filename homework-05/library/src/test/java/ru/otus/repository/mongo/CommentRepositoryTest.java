@@ -1,4 +1,4 @@
-package ru.otus.repository;
+package ru.otus.repository.mongo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

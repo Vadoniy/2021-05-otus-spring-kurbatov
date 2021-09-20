@@ -2,8 +2,8 @@ package ru.otus.service.impl;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-import ru.otus.domain.ExamQuestion;
-import ru.otus.domain.FileQuestion;
+import ru.otus.domain.mongo.ExamQuestion;
+import ru.otus.domain.mongo.FileQuestion;
 
 import java.util.ArrayList;
 import java.util.Arrays;

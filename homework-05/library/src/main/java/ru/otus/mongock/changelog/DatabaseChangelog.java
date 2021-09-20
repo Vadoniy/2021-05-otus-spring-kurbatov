@@ -4,12 +4,12 @@ import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import ru.otus.domain.Book;
-import ru.otus.domain.Comment;
-import ru.otus.repository.AuthorRepository;
-import ru.otus.repository.BookRepository;
-import ru.otus.repository.CommentRepository;
-import ru.otus.repository.GenreRepository;
+import ru.otus.domain.mongo.Book;
+import ru.otus.domain.mongo.Comment;
+import ru.otus.repository.mongo.AuthorRepository;
+import ru.otus.repository.mongo.BookRepository;
+import ru.otus.repository.mongo.CommentRepository;
+import ru.otus.repository.mongo.GenreRepository;
 
 import java.util.List;
 

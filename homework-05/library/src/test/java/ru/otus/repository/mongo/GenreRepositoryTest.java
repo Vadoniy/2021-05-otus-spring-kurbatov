@@ -1,10 +1,10 @@
-package ru.otus.repository;
+package ru.otus.repository.mongo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
-import ru.otus.domain.Genre;
+import ru.otus.domain.mongo.Genre;
 import ru.otus.mongo.event.GenreCascadeDeleteEventListener;
 
 import java.util.NoSuchElementException;

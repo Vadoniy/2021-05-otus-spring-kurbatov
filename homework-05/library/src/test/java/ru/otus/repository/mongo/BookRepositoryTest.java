@@ -1,13 +1,13 @@
-package ru.otus.repository;
+package ru.otus.repository.mongo;
 
 import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
-import ru.otus.domain.Author;
-import ru.otus.domain.Book;
-import ru.otus.domain.Genre;
+import ru.otus.domain.mongo.Author;
+import ru.otus.domain.mongo.Book;
+import ru.otus.domain.mongo.Genre;
 import ru.otus.exception.UnknownBookException;
 import ru.otus.mongo.event.BookCascadeDeleteEventListener;
 
