@@ -10,7 +10,7 @@ import otus.domain.Genre;
 @Accessors(chain = true)
 public class GenreDto {
 
-    private Long id;
+    private String id;
 
     private String genreName;
 

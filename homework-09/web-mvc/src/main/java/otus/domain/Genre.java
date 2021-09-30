@@ -1,32 +1,23 @@
 package otus.domain;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
-import java.util.List;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 @EqualsAndHashCode(of = "id")
-@Entity
-@ToString(exclude = "bookList")
-@Table(name = "GENRE")
+@NoArgsConstructor
+@Document("GENRE")
 public class Genre {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(name = "GENRE", nullable = false, unique = true)
+    @NotBlank
     private String genreName;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "genre", cascade = CascadeType.REMOVE)
-    private List<Book> bookList;
-
-    public Genre(long id) {
-        this.id = id;
-    }
 
     public Genre(String genreName) {
         this.genreName = genreName;

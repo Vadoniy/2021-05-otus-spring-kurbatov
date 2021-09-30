@@ -8,45 +8,43 @@ import org.springframework.web.bind.annotation.*;
 import otus.domain.Book;
 import otus.exception.UnknownAuthorException;
 import otus.exception.UnknownGenreException;
+import otus.repository.AuthorRepository;
+import otus.repository.BookRepository;
+import otus.repository.GenreRepository;
 import otus.rest.dto.BookDto;
-import otus.service.AuthorService;
-import otus.service.BookService;
-import otus.service.GenreService;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
 public class BookRestController {
 
-    private final AuthorService authorService;
+    private final AuthorRepository authorRepository;
 
-    private final BookService bookService;
+    private final BookRepository bookRepository;
 
-    private final GenreService genreService;
+    private final GenreRepository genreRepository;
 
     @GetMapping("/api/book")
-    public List<BookDto> getAllBooks() {
-        return bookService.getBooks().stream()
-                .map(BookDto::toDto)
-                .collect(Collectors.toList());
+    public Flux<BookDto> getAllBooks() {
+        return bookRepository.findAll()
+                .map(BookDto::toDto);
     }
 
     @DeleteMapping("/api/book/{id}")
-    public void deleteBook(@PathVariable("id") long id) {
-        bookService.deleteBook(id);
+    public Mono<Void> deleteBook(@PathVariable("id") String id) {
+        return bookRepository.deleteById(id);
     }
 
     @PostMapping(value = "/api/book", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveBook(@RequestBody Book book) {
-        final var author = authorService.getAuthorById(book.getAuthor().getId())
+        final var author = authorRepository.findById(book.getAuthor().getId()).blockOptional()
                 .orElseThrow(() -> new UnknownAuthorException("There is no author with id " + book.getAuthor().getId()));
-        final var genre = genreService.getGenreById(book.getGenre().getId())
+        final var genre = genreRepository.findById(book.getGenre().getId()).blockOptional()
                 .orElseThrow(() -> new UnknownGenreException("There is no genre with id " + book.getGenre().getId()));
         book.setAuthor(author);
         book.setGenre(genre);
-        bookService.saveBook(book);
+        bookRepository.save(book).subscribe();;
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 }

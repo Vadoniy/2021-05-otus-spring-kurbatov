@@ -6,33 +6,32 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import otus.domain.Author;
+import otus.repository.AuthorRepository;
 import otus.rest.dto.AuthorDto;
-import otus.service.AuthorService;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
 public class AuthorRestController {
 
-    private final AuthorService authorService;
+    private final AuthorRepository authorRepository;
 
     @GetMapping("/api/author")
-    public List<AuthorDto> getAllAuthors() {
-        return authorService.getAuthors().stream()
-                .map(AuthorDto::toDto)
-                .collect(Collectors.toList());
+    public Flux<AuthorDto> getAllAuthors() {
+        return authorRepository.findAll()
+                .map(AuthorDto::toDto);
     }
 
     @DeleteMapping("/api/author/{id}")
-    public void deleteAuthor(@PathVariable("id") long id) {
-        authorService.deleteAuthor(id);
+    public Mono<Void> deleteAuthor(@PathVariable("id") String id) {
+        return authorRepository.deleteById(id);
     }
 
     @PostMapping(value = "/api/author", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveAuthor(@RequestBody Author author) {
-        authorService.addNewAuthor(author);
+        authorRepository.save(author)
+                .subscribe();
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 }

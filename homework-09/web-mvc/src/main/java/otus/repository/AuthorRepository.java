@@ -1,10 +1,8 @@
 package otus.repository;
 
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import otus.domain.Author;
 
-public interface AuthorRepository extends JpaRepository<Author, Long> {
-
-    void deleteById(long id);
+public interface AuthorRepository extends ReactiveMongoRepository<Author, String> {
 }

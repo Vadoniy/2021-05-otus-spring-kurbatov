@@ -1,9 +1,10 @@
 package otus.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import otus.domain.Genre;
+import reactor.core.publisher.Mono;
 
-public interface GenreRepository extends JpaRepository<Genre, Long> {
+public interface GenreRepository extends ReactiveMongoRepository<Genre, String> {
 
-    void deleteById(long id);
+    Mono<Genre> findByGenreName(String genreName);
 }

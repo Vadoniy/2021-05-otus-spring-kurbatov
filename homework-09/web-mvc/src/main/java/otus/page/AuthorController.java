@@ -7,14 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import otus.domain.Author;
-import otus.service.AuthorService;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping
 public class AuthorController {
-
-    private final AuthorService authorService;
 
     @GetMapping("/author")
     public String getAuthorsList() {

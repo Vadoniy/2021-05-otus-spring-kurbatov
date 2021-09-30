@@ -1,35 +1,27 @@
 package otus.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
-
-@Data
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-@Entity
-@Table(name = "BOOK")
-@NamedEntityGraph(name = "author-genres-to-book-entity-graph",
-        attributeNodes = {@NamedAttributeNode("author"), @NamedAttributeNode("genre")})
+@Document("BOOK")
 public class Book {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id;
 
-    @Column(name = "TITLE", nullable = false, unique = true)
+    @NotBlank
     private String title;
 
-    @ManyToOne(targetEntity = Author.class, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "AUTHOR_ID")
     private Author author;
 
-    @ManyToOne(targetEntity = Genre.class, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "GENRE_ID")
     private Genre genre;
 
     public Book(String title, Author author, Genre genre) {

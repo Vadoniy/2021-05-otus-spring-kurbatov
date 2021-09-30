@@ -6,33 +6,31 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import otus.domain.Genre;
+import otus.repository.GenreRepository;
 import otus.rest.dto.GenreDto;
-import otus.service.GenreService;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
 public class GenreRestController {
 
-    private final GenreService genreService;
+    private final GenreRepository genreRepository;
 
     @GetMapping("/api/genre")
-    public List<GenreDto> getAllGenres() {
-        return genreService.getGenres().stream()
-                .map(GenreDto::toDto)
-                .collect(Collectors.toList());
+    public Flux<GenreDto> getAllGenres() {
+        return genreRepository.findAll()
+                .map(GenreDto::toDto);
     }
 
     @DeleteMapping("/api/genre/{id}")
-    public void deleteGenre(@PathVariable("id") long id) {
-        genreService.deleteGenre(id);
+    public Mono<Void> deleteGenre(@PathVariable("id") String id) {
+        return genreRepository.deleteById(id);
     }
 
     @PostMapping(value = "/api/genre", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> saveAuthor(@RequestBody Genre genre) {
-        genreService.addNewGenre(genre);
+    public ResponseEntity<?> saveGenre(@RequestBody Genre genre) {
+        genreRepository.save(genre).subscribe();;
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 }
