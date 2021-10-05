@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import otus.domain.Genre;
+import reactor.core.publisher.Mono;
 
 @Controller
 @RequiredArgsConstructor
@@ -14,14 +15,14 @@ import otus.domain.Genre;
 public class GenreController {
 
     @GetMapping("/genre")
-    public String getGenresList() {
-        return "/genre/allGenres";
+    public Mono<String> getGenresList() {
+        return Mono.just("/genre/allGenres");
     }
 
     @PostMapping("/genre")
-    public String addGenre(Model model) {
+    public Mono<String> addGenre(Model model) {
         final var genre = new Genre();
         model.addAttribute("genre", genre);
-        return "/genre/addGenre";
+        return Mono.just("/genre/addGenre");
     }
 }

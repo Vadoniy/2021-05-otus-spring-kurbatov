@@ -50,8 +50,8 @@
     function saveBook() {
         var data = {};
         data["title"] = $("#title-input").val();
-        data["author"] = parseInt($("#author-input").val());
-        data["genre"] = parseInt($("#genre-input").val());
+        data["author"] = $("#author-input option:selected").text();
+        data["genre"] = $("#genre-input option:selected").text();
 
         $.ajax({
             type: 'POST',

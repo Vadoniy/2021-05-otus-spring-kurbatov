@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import otus.domain.Author;
+import reactor.core.publisher.Mono;
 
 @Controller
 @RequiredArgsConstructor
@@ -14,14 +15,14 @@ import otus.domain.Author;
 public class AuthorController {
 
     @GetMapping("/author")
-    public String getAuthorsList() {
-        return "/author/allAuthors";
+    public Mono<String> getAuthorsList() {
+        return Mono.just("/author/allAuthors");
     }
 
     @PostMapping("/author")
-    public String addAuthor(Model model) {
+    public Mono<String> addAuthor(Model model) {
         final var author = new Author();
         model.addAttribute("author", author);
-        return "/author/addAuthor";
+        return Mono.just("/author/addAuthor");
     }
 }
