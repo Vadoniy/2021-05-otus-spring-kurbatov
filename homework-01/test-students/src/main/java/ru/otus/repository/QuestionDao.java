@@ -1,4 +1,4 @@
-package ru.otus.dao;
+package ru.otus.repository;
 
 import ru.otus.domain.ExamQuestion;
 

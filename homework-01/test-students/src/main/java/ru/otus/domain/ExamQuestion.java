@@ -11,15 +11,19 @@ import java.util.List;
 @Accessors(chain = true)
 public class ExamQuestion {
 
+    private int questionNumber;
+
     private String question;
 
     private List<String> answers;
 
-    private Integer correctAnswer;
+    private int usersAnswer;
+
+    private int correctAnswer;
 
     @Override
     public String toString() {
-        final var question = new StringBuffer(this.question);
+        final var question = new StringBuilder(this.question);
         for (int numberOfAnswer = 0; numberOfAnswer < answers.size(); numberOfAnswer++) {
             question.append('\n').append(numberOfAnswer + 1).append(") ").append(answers.get(numberOfAnswer)).append(";");
         }

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new book</title>
+    <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+<h1>Add new book:</h1>
+<form id="edit-form" onsubmit="saveBook()" name="book">
+
+    <div class="row">
+        <label for="title-input">Title:</label>
+        <input id="title-input" name="title" th:value="${book.title}" type="text" value="War&Peace"/>
+    </div>
+
+    <table>
+        <tr>
+            <td>Select author:</td>
+            <td>
+                <select th:field="${book.author.id}" id="author-input">
+                    <option value="">--</option>
+                    <option name="author" th:each="author : ${authors}"
+                            th:value="${author.id}"
+                            th:utext="${author.name}"/>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td>Select genre:</td>
+            <td>
+                <select th:field="${book.genre.id}" id="genre-input">
+                    <option value="">--</option>
+                    <option name="genre" th:each="genre : ${genres}"
+                            th:value="${genre.id}"
+                            th:utext="${genre.getGenreName}"/>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <div class="row">
+        <button type="submit">Save</button>
+    </div>
+</form>
+<script>
+    function saveBook() {
+        var data = {};
+        data["title"] = $("#title-input").val();
+        data["author"] = parseInt($("#author-input").val());
+        data["genre"] = parseInt($("#genre-input").val());
+
+        $.ajax({
+            type: 'POST',
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(data),
+            url: '/api/book',
+            success: function (data) {
+                window.location.replace('/book');
+            }
+        });
+    }
+</script>
+</body>
+</html>

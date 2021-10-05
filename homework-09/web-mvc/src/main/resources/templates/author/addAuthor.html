@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new author</title>
+    <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+<form id="edit-form" onsubmit="saveAuthor()" name="author">
+
+    <h1>Author Info:</h1>
+
+    <div class="row">
+        <label for="name-input">Name:</label>
+        <input id="name-input" name="name" th:value="${author.name}" type="text" value="Leo Tolstoy"/>
+    </div>
+    <div class="row">
+        <button type="submit">Save</button>
+    </div>
+</form>
+<script>
+    function saveAuthor() {
+        var data = {};
+        data["name"] = $("#name-input").val();
+
+        $.ajax({
+            type: 'POST',
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(data),
+            url: '/api/author',
+            success: function (data) {
+                window.location.replace('/author');
+            }
+        });
+    }
+</script>
+</body>
+</html>
