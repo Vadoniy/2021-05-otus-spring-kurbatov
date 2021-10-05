@@ -19,6 +19,8 @@ public class DisplayServiceImpl implements DisplayService {
 
     private final BusinessConfigurationProperties businessConfigurationProperties;
 
+    private final LocalizationServiceImpl localizationService;
+
     @Override
     public void showText(String textToShow, OutputStream outputStream) {
         try {
@@ -36,13 +38,13 @@ public class DisplayServiceImpl implements DisplayService {
             final var input = br.readLine();
             if (businessConfigurationProperties.getStopWord().equals(input)) {
                 log.info("User decided to interrupt exam.");
-                System.out.println("You have typed exit, we are sorry that you are going.");
+                System.out.println(localizationService.getLocalizedMessage("info.result.interrupt"));
                 System.exit(0);
             }
             return input;
         } catch (IOException e) {
             log.error("Wrong input {}", e.getMessage());
-            System.err.println("Wrong input, try again please");
+            System.err.println(localizationService.getLocalizedMessage("input.error.input"));
         }
         return "0";
     }

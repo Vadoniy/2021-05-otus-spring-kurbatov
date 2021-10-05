@@ -25,12 +25,14 @@ public class ExamServiceImpl implements ExamService {
 
     private final BusinessConfigurationProperties businessConfigurationProperties;
 
+    private final LocalizationServiceImpl localizationService;
+
     @Override
     public void startExam() {
         try {
             final var questions = questionDao.getQuestions();
 
-            displayServiceImpl.showText(String.format("Let's begin the exam. Type %s to go away or press enter to continue", businessConfigurationProperties.getStopWord()),
+            displayServiceImpl.showText(String.format(localizationService.getLocalizedMessage("info.greeting"), businessConfigurationProperties.getStopWord()),
                     System.out);
             final var amountOfQuestions = questions.size();
             final var amountOfCorrectAnswers = questions.stream()
@@ -39,14 +41,14 @@ public class ExamServiceImpl implements ExamService {
                     .filter(Boolean::booleanValue)
                     .count();
             if (amountOfCorrectAnswers <= amountOfQuestions / 2) {
-                displayServiceImpl.showText("You are the weakest link, good bye.", System.out);
+                displayServiceImpl.showText(localizationService.getLocalizedMessage("info.result.bad"), System.out);
             } else if (amountOfCorrectAnswers == amountOfQuestions) {
-                displayServiceImpl.showText("Congratulations! You are the strongest link!", System.out);
+                displayServiceImpl.showText(localizationService.getLocalizedMessage("info.result.perfect"), System.out);
             } else {
-                displayServiceImpl.showText("Not bad, but try harder in the future.", System.out);
+                displayServiceImpl.showText(localizationService.getLocalizedMessage("info.result.so-so"), System.out);
             }
         } catch (ReadFileQuestionsException ex) {
-            displayServiceImpl.showText("Can't read input resource! Description: " + ex.getMessage(), System.err);
+            displayServiceImpl.showText(localizationService.getLocalizedMessage("input.error.file") + ex.getMessage(), System.err);
         }
     }
 
@@ -64,8 +66,7 @@ public class ExamServiceImpl implements ExamService {
                     .orElse(0);
         } catch (NumberFormatException ex) {
             log.error("Wrong input from user. {}", ex.getMessage());
-            displayServiceImpl.showText("Look, it is just test, you should type number of answer," +
-                    " it is always digit, don't use anything else. Try another time", System.err);
+            displayServiceImpl.showText(localizationService.getLocalizedMessage("input.error.user"), System.err);
         }
         return 0;
     }

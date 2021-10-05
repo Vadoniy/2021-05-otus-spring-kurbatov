@@ -4,12 +4,16 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties
+@ConfigurationProperties(prefix = "exam")
 @Getter
 @Setter
 public class BusinessConfigurationProperties {
 
+    private String filePath;
+
     private String fileName;
+
+    private String locale;
 
     private String stopWord;
 }
