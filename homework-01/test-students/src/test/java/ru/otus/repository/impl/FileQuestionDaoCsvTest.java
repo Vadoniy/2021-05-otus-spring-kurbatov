@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.DefaultResourceLoader;
+import ru.otus.dao.impl.QuestionDaoCsv;
 import ru.otus.domain.ExamQuestion;
 import ru.otus.exception.ReadFileQuestionsException;
 import ru.otus.service.impl.FileQuestionToExamQuestionConverter;
@@ -34,13 +35,13 @@ class FileQuestionDaoCsvTest {
                                 .setCorrectAnswer(new Random().nextInt())
                                 .setQuestionNumber(new Random().nextInt())
                 );
-        final var questionDao = new QuestionDaoCsv(new DefaultResourceLoader(), fileQuestionToExamQuestionConverter, "test.csv");
+        final var questionDao = new QuestionDaoCsv(new DefaultResourceLoader().getResource("data/test.csv"), fileQuestionToExamQuestionConverter);
         assertNotNull(questionDao.getQuestions());
     }
 
     @Test
     public void emptyResourceThrowsException() {
-        assertThrows(ReadFileQuestionsException.class, () -> new QuestionDaoCsv(null, fileQuestionToExamQuestionConverter, "test.csv")
+        assertThrows(ReadFileQuestionsException.class, () -> new QuestionDaoCsv(null, fileQuestionToExamQuestionConverter)
                 .getQuestions());
     }
 }

@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import ru.otus.dao.QuestionDao;
 import ru.otus.domain.ExamQuestion;
 import ru.otus.domain.FileQuestion;
 import ru.otus.exception.ReadFileQuestionsException;
+import ru.otus.repository.QuestionDao;
 import ru.otus.service.impl.FileQuestionToExamQuestionConverter;
 
 import java.io.BufferedReader;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class QuestionDaoImpl implements QuestionDao {
+public class QuestionDaoCsv implements QuestionDao {
 
     private final Resource resourceFile;
 
