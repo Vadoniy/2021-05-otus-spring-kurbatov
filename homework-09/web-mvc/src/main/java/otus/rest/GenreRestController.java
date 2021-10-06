@@ -7,12 +7,14 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import otus.domain.Genre;
+import otus.repository.BookRepository;
 import otus.repository.GenreRepository;
 import otus.rest.dto.GenreDto;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.BodyExtractors.toMono;
+import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -21,8 +23,8 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 public class GenreRestController {
 
     @Bean
-    public RouterFunction<ServerResponse> genreComposedRoutes(GenreRepository genreRepository) {
-        final var genreHandler = new GenreHandler(genreRepository);
+    public RouterFunction<ServerResponse> genreComposedRoutes(GenreRepository genreRepository, BookRepository bookRepository) {
+        final var genreHandler = new GenreHandler(bookRepository, genreRepository);
         return route()
                 .GET("/api/genre", accept(APPLICATION_JSON), genreHandler::list)
                 .POST("/api/genre", accept(APPLICATION_JSON), genreHandler::save)
@@ -32,6 +34,8 @@ public class GenreRestController {
 
     @RequiredArgsConstructor
     static class GenreHandler {
+
+        private final BookRepository bookRepository;
 
         private final GenreRepository genreRepository;
 
@@ -45,7 +49,10 @@ public class GenreRestController {
         }
 
         Mono<ServerResponse> delete(ServerRequest request) {
-            return ok().contentType(APPLICATION_JSON).body(genreRepository.deleteById(request.pathVariable("id")), GenreDto.class);
+            return genreRepository.deleteById(request.pathVariable("id"))
+                    .then(bookRepository.deleteByGenreId(request.pathVariable("id")))
+                    .flatMap(aVoid -> ok().contentType(APPLICATION_JSON)
+                            .body(fromValue(aVoid)));
         }
     }
 }

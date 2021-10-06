@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.BodyExtractors.toMono;
+import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -47,7 +48,8 @@ public class BookRestController {
         }
 
         Mono<ServerResponse> delete(ServerRequest request) {
-            return ok().contentType(APPLICATION_JSON).body(bookRepository.deleteById(request.pathVariable("id")), Book.class);
+            return bookRepository.deleteById(request.pathVariable("id"))
+                    .flatMap(aVoid -> ok().contentType(APPLICATION_JSON).body(fromValue(aVoid)));
         }
     }
 }
