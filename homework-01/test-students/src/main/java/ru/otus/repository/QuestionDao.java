@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface QuestionDao {
 
-    List<ExamQuestion> getQuestions();
+    List<ExamQuestion> getQuestions(String fileNameWithPath);
 }

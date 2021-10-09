@@ -9,7 +9,7 @@ import ru.otus.domain.ExamQuestion;
 import ru.otus.exception.ReadFileQuestionsException;
 import ru.otus.repository.QuestionDao;
 import ru.otus.service.ExamService;
-import ru.otus.service.LocalizationDisplayFacadeService;
+import ru.otus.service.LocalizationDisplayService;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -23,13 +23,16 @@ public class ExamServiceImpl implements ExamService {
 
     private final BusinessConfigurationProperties businessConfigurationProperties;
 
-    private final LocalizationDisplayFacadeService localizationDisplayFacadeService;
+    private final LocalizationDisplayService localizationDisplayService;
 
     @Override
     public void startExam() {
         try {
-            final var questions = questionDao.getQuestions();
-            localizationDisplayFacadeService.showLocalizedText("info.greeting", businessConfigurationProperties.getStopWord());
+            final var fileNameWithPath = businessConfigurationProperties.getFilePath()
+                    + businessConfigurationProperties.getFileName()
+                    + businessConfigurationProperties.getFileExtension();
+            final var questions = questionDao.getQuestions(fileNameWithPath);
+            localizationDisplayService.showLocalizedText("info.greeting", businessConfigurationProperties.getStopWord());
             final var amountOfQuestions = questions.size();
             final var amountOfCorrectAnswers = questions.stream()
                     .filter(Objects::nonNull)
@@ -37,21 +40,27 @@ public class ExamServiceImpl implements ExamService {
                     .filter(Boolean::booleanValue)
                     .count();
             if (amountOfCorrectAnswers <= amountOfQuestions / 2) {
-                localizationDisplayFacadeService.showLocalizedText("info.result.bad");
+                localizationDisplayService.showLocalizedText("info.result.bad");
             } else if (amountOfCorrectAnswers == amountOfQuestions) {
-                localizationDisplayFacadeService.showLocalizedText("info.result.perfect");
+                localizationDisplayService.showLocalizedText("info.result.perfect");
             } else {
-                localizationDisplayFacadeService.showLocalizedText("info.result.so-so");
+                localizationDisplayService.showLocalizedText("info.result.so-so");
             }
             System.exit(0);
         } catch (ReadFileQuestionsException ex) {
-            localizationDisplayFacadeService.showLocalizedText("input.error.file", ex.getMessage());
+            localizationDisplayService.showLocalizedText("input.error.file", ex.getMessage());
         }
     }
 
     private boolean processTheQuestion(ExamQuestion question) {
-        localizationDisplayFacadeService.showText(question.toString());
-        final var usersAnswer = localizationDisplayFacadeService.getInputString();
+        localizationDisplayService.showLocalizedText(question.getQuestion());
+        question.getAnswers().forEach(localizationDisplayService::showLocalizedText);
+        final var usersAnswer = localizationDisplayService.getInputString();
+        if (businessConfigurationProperties.getStopWord().equals(usersAnswer)) {
+            log.info("User decided to interrupt exam.");
+            localizationDisplayService.showLocalizedText("info.result.interrupt");
+            System.exit(0);
+        }
         return validateUsersAnswer(usersAnswer).equals(question.getCorrectAnswer());
     }
 
@@ -63,7 +72,7 @@ public class ExamServiceImpl implements ExamService {
                     .orElse(0);
         } catch (NumberFormatException ex) {
             log.error("Wrong input from user. {}", ex.getMessage());
-            localizationDisplayFacadeService.showLocalizedText("input.error.user");
+            localizationDisplayService.showLocalizedText("input.error.user");
         }
         return 0;
     }

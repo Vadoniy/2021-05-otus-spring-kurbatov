@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
-import ru.otus.configuration.BusinessConfigurationProperties;
 import ru.otus.domain.ExamQuestion;
 import ru.otus.domain.FileQuestion;
 import ru.otus.exception.ReadFileQuestionsException;
@@ -27,14 +26,10 @@ public class QuestionDaoCsv implements QuestionDao {
 
     private final ResourceLoader resourceLoader;
 
-    private final BusinessConfigurationProperties businessConfigurationProperties;
-
     @Override
-    public List<ExamQuestion> getQuestions() {
-        final var fileNameWithPath = businessConfigurationProperties.getFilePath()
-                + String.format(businessConfigurationProperties.getFileName(), businessConfigurationProperties.getLocale());
+    public List<ExamQuestion> getQuestions(String fileNameWithPath) {
         try (final var reader = new BufferedReader(
-                new InputStreamReader(resourceLoader.getResource("classpath:" + fileNameWithPath).getInputStream(), StandardCharsets.UTF_8))
+                new InputStreamReader(resourceLoader.getResource("classpath:" + fileNameWithPath).getInputStream(), StandardCharsets.ISO_8859_1))
         ) {
             return new CsvToBeanBuilder<FileQuestion>(reader)
                     .withType(FileQuestion.class)
