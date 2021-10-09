@@ -1,38 +1,58 @@
 package otus.rest;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import otus.domain.Genre;
+import otus.repository.BookRepository;
+import otus.repository.GenreRepository;
 import otus.rest.dto.GenreDto;
-import otus.service.GenreService;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.web.reactive.function.BodyExtractors.toMono;
+import static org.springframework.web.reactive.function.BodyInserters.fromValue;
+import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
-@RestController
-@RequiredArgsConstructor
+@Component
 public class GenreRestController {
 
-    private final GenreService genreService;
-
-    @GetMapping("/api/genre")
-    public List<GenreDto> getAllGenres() {
-        return genreService.getGenres().stream()
-                .map(GenreDto::toDto)
-                .collect(Collectors.toList());
+    @Bean
+    public RouterFunction<ServerResponse> genreComposedRoutes(GenreRepository genreRepository, BookRepository bookRepository) {
+        final var genreHandler = new GenreHandler(bookRepository, genreRepository);
+        return route()
+                .GET("/api/genre", accept(APPLICATION_JSON), genreHandler::list)
+                .POST("/api/genre", accept(APPLICATION_JSON), genreHandler::save)
+                .DELETE("/api/genre/{id}", accept(APPLICATION_JSON), genreHandler::delete)
+                .build();
     }
 
-    @DeleteMapping("/api/genre/{id}")
-    public void deleteGenre(@PathVariable("id") long id) {
-        genreService.deleteGenre(id);
-    }
+    @RequiredArgsConstructor
+    static class GenreHandler {
 
-    @PostMapping(value = "/api/genre", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> saveAuthor(@RequestBody Genre genre) {
-        genreService.addNewGenre(genre);
-        return ResponseEntity.ok(HttpStatus.CREATED);
+        private final BookRepository bookRepository;
+
+        private final GenreRepository genreRepository;
+
+        Mono<ServerResponse> list(ServerRequest request) {
+            return ok().contentType(APPLICATION_JSON).body(genreRepository.findAll().map(GenreDto::toDto), GenreDto.class);
+        }
+
+        Mono<ServerResponse> save(ServerRequest request) {
+            final var genreMono = request.body(toMono(Genre.class));
+            return genreMono.flatMap(genre -> ok().contentType(APPLICATION_JSON).body(genreRepository.save(genre).map(GenreDto::toDto), GenreDto.class));
+        }
+
+        Mono<ServerResponse> delete(ServerRequest request) {
+            return genreRepository.deleteById(request.pathVariable("id"))
+                    .then(bookRepository.deleteByGenreId(request.pathVariable("id")))
+                    .flatMap(aVoid -> ok().contentType(APPLICATION_JSON)
+                            .body(fromValue(aVoid)));
+        }
     }
 }

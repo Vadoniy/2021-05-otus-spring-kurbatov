@@ -8,49 +8,48 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import otus.domain.Book;
-import otus.exception.UnknownBookException;
-import otus.service.AuthorService;
-import otus.service.BookService;
-import otus.service.GenreService;
+import otus.repository.AuthorRepository;
+import otus.repository.BookRepository;
+import otus.repository.GenreRepository;
+import reactor.core.publisher.Mono;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping
 public class BookController {
 
-    private final AuthorService authorService;
+    private final AuthorRepository authorRepository;
 
-    private final BookService bookService;
+    private final BookRepository bookRepository;
 
-    private final GenreService genreService;
+    private final GenreRepository genreRepository;
 
     @GetMapping("/book")
-    public String getBooksList(Model model) {
-        final var allBooks = bookService.getBooks();
+    public Mono<String> getBooksList(Model model) {
+        final var allBooks = bookRepository.findAll();
         model.addAttribute("books", allBooks);
-        return "/book/allBooks";
+        return Mono.just("/book/allBooks");
     }
 
     @GetMapping("/book/{id}")
-    public String editBook(@PathVariable("id") long id, Model model) {
-        final var bookToEdit = bookService.getBookById(id)
-                .orElseThrow(() -> new UnknownBookException("No book with id " + id));
-        final var allAuthors = authorService.getAuthors();
-        final var allGenres = genreService.getGenres();
+    public Mono<String> editBook(@PathVariable("id") String id, Model model) {
+        final var bookToEdit = bookRepository.findById(id);
+        final var allAuthors = authorRepository.findAll();
+        final var allGenres = genreRepository.findAll();
         model.addAttribute("book", bookToEdit);
         model.addAttribute("authors", allAuthors);
         model.addAttribute("genres", allGenres);
-        return "/book/editBook";
+        return Mono.just("/book/editBook");
     }
 
     @PostMapping("/book")
-    public String addBook(Model model) {
+    public Mono<String> addBook(Model model) {
         final var book = new Book();
-        final var allAuthors = authorService.getAuthors();
-        final var allGenres = genreService.getGenres();
+        final var allAuthors = authorRepository.findAll();
+        final var allGenres = genreRepository.findAll();
         model.addAttribute("authors", allAuthors);
         model.addAttribute("genres", allGenres);
         model.addAttribute("book", book);
-        return "/book/addBook";
+        return Mono.just("/book/addBook");
     }
 }

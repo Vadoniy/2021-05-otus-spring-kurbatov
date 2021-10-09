@@ -15,7 +15,7 @@ import java.util.Optional;
 @Accessors(chain = true)
 public class BookDto {
 
-    private long id;
+    private String id;
 
     private String title;
 

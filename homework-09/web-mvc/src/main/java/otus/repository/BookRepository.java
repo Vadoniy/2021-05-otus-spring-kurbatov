@@ -1,14 +1,13 @@
 package otus.repository;
 
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import otus.domain.Book;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
+public interface BookRepository extends ReactiveMongoRepository<Book, String> {
 
-public interface BookRepository extends JpaRepository<Book, Long> {
+    Mono<Void> deleteByAuthorId(String authorId);
 
-    @EntityGraph(value = "author-genres-to-book-entity-graph")
-    @Override
-    List<Book> findAll();
+    Mono<Void> deleteByGenreId(String genreId);
+
 }
