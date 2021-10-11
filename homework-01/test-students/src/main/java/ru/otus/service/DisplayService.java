@@ -2,9 +2,9 @@ package ru.otus.service;
 
 public interface DisplayService {
 
-    void showText(String textToShow);
+    void showText(String textProperty);
 
-    void showText(String textToShow, String... args);
+    void showText(String textProperty, String... args);
 
     String getInputString();
 }

@@ -13,6 +13,8 @@ public class BusinessConfigurationProperties {
 
     private String fileName;
 
+    private String fileExtension;
+
     private String locale;
 
     private String stopWord;
