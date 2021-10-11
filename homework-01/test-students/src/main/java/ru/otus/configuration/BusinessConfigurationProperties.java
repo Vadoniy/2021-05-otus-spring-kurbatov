@@ -16,6 +16,4 @@ public class BusinessConfigurationProperties {
     private String fileExtension;
 
     private String locale;
-
-    private String stopWord;
 }
