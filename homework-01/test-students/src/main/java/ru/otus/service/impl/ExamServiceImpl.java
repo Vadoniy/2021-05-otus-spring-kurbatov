@@ -22,22 +22,19 @@ public class ExamServiceImpl implements ExamService {
 
     private final String stopWord;
 
-    private final FileNameProvider fileNameProvider;
-
     private final LocalizationDisplayService localizationDisplayService;
 
     public ExamServiceImpl(QuestionDao questionDao, @Value("${exam.stop-word}") String stopWord,
                            FileNameProvider fileNameProvider, LocalizationDisplayService localizationDisplayService) {
         this.questionDao = questionDao;
         this.stopWord = stopWord;
-        this.fileNameProvider = fileNameProvider;
         this.localizationDisplayService = localizationDisplayService;
     }
 
     @Override
     public void startExam() {
         try {
-            final var questions = questionDao.getQuestions(fileNameProvider.getFileNameWithPath());
+            final var questions = questionDao.getQuestions();
             localizationDisplayService.showLocalizedMessage("info.greeting", stopWord);
             final var amountOfQuestions = questions.size();
             final var amountOfCorrectAnswers = questions.stream()
