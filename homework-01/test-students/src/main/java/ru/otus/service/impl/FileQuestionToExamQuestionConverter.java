@@ -19,7 +19,7 @@ public class FileQuestionToExamQuestionConverter implements Converter<FileQuesti
                 .map(Arrays::asList)
                 .orElse(new ArrayList<>());
         return new ExamQuestion()
-                .setQuestionNumber(Integer.parseInt(fileQuestion.getQuestionNumber()))
+                .setQuestionNumber(Integer.parseInt(fileQuestion.getQuestionNumber().replaceAll("\\D", "")))
                 .setQuestion(fileQuestion.getQuestion())
                 .setAnswers(answers)
                 .setCorrectAnswer(fileQuestion.getCorrectAnswer());

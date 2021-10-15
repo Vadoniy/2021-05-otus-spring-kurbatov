@@ -1,2 +1,11 @@
-file-name: test.csv
-stop-word: exit
+spring:
+  messages:
+    basename: i18n/messages
+    fallback-to-system-locale: false
+
+exam:
+  file-path: data/
+  file-name: test
+  file-extension: .csv
+  stop-word: exit
+  locale: ru

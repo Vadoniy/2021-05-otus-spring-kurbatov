@@ -1,14 +1,34 @@
 package ru.otus.configuration;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.util.StringUtils;
+import ru.otus.service.FileNameProvider;
+import ru.otus.service.LocaleProvider;
 
-@Configuration
-public class BusinessConfigurationProperties {
+@ConfigurationProperties(prefix = "exam")
+@Getter
+@Setter
+public class BusinessConfigurationProperties implements FileNameProvider, LocaleProvider {
 
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
-        return new PropertySourcesPlaceholderConfigurer();
+    private String filePath;
+
+    private String fileName;
+
+    private String fileExtension;
+
+    private String locale;
+
+    public String getFileNameWithPath() {
+        final var fileNameWithPath = new StringBuilder("classpath:")
+                .append(filePath)
+                .append(fileName);
+        if (StringUtils.hasText(locale)) {
+            fileNameWithPath.append("_")
+                    .append(locale);
+        }
+        fileNameWithPath.append(fileExtension);
+        return fileNameWithPath.toString();
     }
 }

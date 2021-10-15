@@ -4,17 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import ru.otus.repository.QuestionDao;
 import ru.otus.domain.ExamQuestion;
-import ru.otus.exception.DisplayServiceException;
 import ru.otus.exception.ReadFileQuestionsException;
-import ru.otus.service.DisplayService;
+import ru.otus.repository.QuestionDao;
 import ru.otus.service.ExamService;
+import ru.otus.service.FileNameProvider;
+import ru.otus.service.LocalizationDisplayService;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -22,73 +20,54 @@ public class ExamServiceImpl implements ExamService {
 
     private final QuestionDao questionDao;
 
-    private final DisplayService displayService;
-
     private final String stopWord;
 
-    public ExamServiceImpl(QuestionDao questionDao, DisplayService displayService, @Value("${stop-word}") String stopWord) {
+    private final LocalizationDisplayService localizationDisplayService;
+
+    public ExamServiceImpl(QuestionDao questionDao, @Value("${exam.stop-word}") String stopWord,
+                           FileNameProvider fileNameProvider, LocalizationDisplayService localizationDisplayService) {
         this.questionDao = questionDao;
-        this.displayService = displayService;
         this.stopWord = stopWord;
+        this.localizationDisplayService = localizationDisplayService;
     }
 
     @Override
     public void startExam() {
         try {
-            displayService.showText("Let's begin the exam. Any moment you can type \"%s\" to leave.", stopWord);
-
-            final var studentsName = findOutStudentsName();
             final var questions = questionDao.getQuestions();
+            localizationDisplayService.showLocalizedMessage("info.greeting", stopWord);
             final var amountOfQuestions = questions.size();
-            final var questionsWithAnswers = questions.stream()
+            final var amountOfCorrectAnswers = questions.stream()
                     .filter(Objects::nonNull)
                     .map(this::processTheQuestion)
-                    .collect(Collectors.toList());
-            final var amountOfCorrectAnswers = questionsWithAnswers.stream()
-                    .filter(Objects::nonNull)
-                    .filter(question -> question.getCorrectAnswer() == question.getUsersAnswer())
+                    .filter(Boolean::booleanValue)
                     .count();
-            displayService.showText(getResult(amountOfQuestions, amountOfCorrectAnswers));
-            log.info("Student {}, correct answers {}/{}}", studentsName, amountOfCorrectAnswers, amountOfQuestions);
+            if (amountOfCorrectAnswers <= amountOfQuestions / 2) {
+                localizationDisplayService.showLocalizedMessage("info.result.bad");
+            } else if (amountOfCorrectAnswers == amountOfQuestions) {
+                localizationDisplayService.showLocalizedMessage("info.result.perfect");
+            } else {
+                localizationDisplayService.showLocalizedMessage("info.result.so-so");
+            }
+            System.exit(0);
         } catch (ReadFileQuestionsException ex) {
-            displayService.showText("Can't read input resource! Description: " + ex.getMessage());
+            localizationDisplayService.showLocalizedMessage("input.error.file", ex.getMessage());
+            System.exit(1);
         }
     }
 
-    private String findOutStudentsName() {
-        final var studentsName = getStudentsInfo("name");
-        final var studentsLastName = getStudentsInfo("surname");
-        final var stringJoiner = new StringJoiner(" ");
-        return stringJoiner.add(studentsName).add(studentsLastName).toString();
-    }
-
-    private String getResult(int amountOfQuestions, long amountOfCorrectAnswers) {
-        if (amountOfCorrectAnswers <= amountOfQuestions / 2) {
-            return "You are the weakest link, good bye.";
-        } else if (amountOfCorrectAnswers == amountOfQuestions) {
-            return "Congratulations! You are the strongest link!";
-        } else {
-            return "Not bad, but try harder in the future.";
-        }
-    }
-
-    private ExamQuestion processTheQuestion(ExamQuestion question) {
-        displayService.showText(question.toString());
-        final var usersAnswer = getInputString();
-        checkInputForInterruptionOfExam(usersAnswer);
-        question.setUsersAnswer(validateUsersAnswer(usersAnswer));
-        return question;
-    }
-
-    private void checkInputForInterruptionOfExam(String usersAnswer) {
+    private boolean processTheQuestion(ExamQuestion question) {
+        localizationDisplayService.showText(question.toString());
+        final var usersAnswer = localizationDisplayService.getInputString();
         if (stopWord.equals(usersAnswer)) {
             log.info("User decided to interrupt exam.");
-            displayService.showText("You have typed \"exit\", we are sorry that you are going.");
+            localizationDisplayService.showLocalizedMessage("info.result.interrupt");
             System.exit(0);
         }
+        return validateUsersAnswer(usersAnswer).equals(question.getCorrectAnswer());
     }
 
-    private int validateUsersAnswer(String usersAnswer) {
+    private Integer validateUsersAnswer(String usersAnswer) {
         try {
             return Optional.ofNullable(usersAnswer)
                     .filter(StringUtils::hasText)
@@ -96,31 +75,8 @@ public class ExamServiceImpl implements ExamService {
                     .orElse(0);
         } catch (NumberFormatException ex) {
             log.error("Wrong input from user. {}", ex.getMessage());
-            displayService.showText("Look, it is just test, you should type number of answer," +
-                    " it is always digit, don't use anything else.");
+            localizationDisplayService.showLocalizedMessage("input.error.user");
         }
         return 0;
-    }
-
-    private String getStudentsInfo(String whatWeWantToFindOut) {
-        displayService.showText("Please, type your %s", whatWeWantToFindOut);
-        final var studentsName = new StringBuilder(getInputString());
-        while (!StringUtils.hasText(studentsName)) {
-            displayService.showText("Are you kidding? Type your %s and let's go on.", whatWeWantToFindOut);
-            studentsName.append(getInputString());
-        }
-        checkInputForInterruptionOfExam(studentsName.toString());
-        return studentsName.toString();
-    }
-
-    private String getInputString() {
-        final var sb = new StringBuilder();
-        try {
-            sb.append(displayService.getInputString());
-        } catch (DisplayServiceException ex) {
-            log.error("Wrong input {}", ex.getMessage());
-            displayService.showText("Wrong input");
-        }
-        return sb.toString();
     }
 }

@@ -25,18 +25,18 @@ public class DisplayServiceConsole implements DisplayService {
     }
 
     @Override
-    public void showText(String textToShow) {
+    public void showText(String textProperty) {
         try {
-            printStreamOut.println(textToShow);
+            printStreamOut.println(textProperty);
         } catch (Exception e) {
             throw new DisplayServiceException(e);
         }
     }
 
     @Override
-    public void showText(String textToShow, String... args) {
+    public void showText(String textProperty, String... args) {
         try {
-            printStreamOut.println(String.format(textToShow, args));
+            printStreamOut.println(String.format(textProperty, args));
         } catch (Exception e) {
             throw new DisplayServiceException(e);
         }
