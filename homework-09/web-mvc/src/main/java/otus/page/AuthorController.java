@@ -16,13 +16,13 @@ public class AuthorController {
 
     @GetMapping("/author")
     public Mono<String> getAuthorsList() {
-        return Mono.just("/author/allAuthors");
+        return Mono.just("author/allAuthors");
     }
 
     @PostMapping("/author")
     public Mono<String> addAuthor(Model model) {
         final var author = new Author();
         model.addAttribute("author", author);
-        return Mono.just("/author/addAuthor");
+        return Mono.just("author/addAuthor");
     }
 }
