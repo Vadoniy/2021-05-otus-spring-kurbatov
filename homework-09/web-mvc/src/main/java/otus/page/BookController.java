@@ -28,7 +28,7 @@ public class BookController {
     public Mono<String> getBooksList(Model model) {
         final var allBooks = bookRepository.findAll();
         model.addAttribute("books", allBooks);
-        return Mono.just("/book/allBooks");
+        return Mono.just("book/allBooks");
     }
 
     @GetMapping("/book/{id}")
@@ -39,7 +39,7 @@ public class BookController {
         model.addAttribute("book", bookToEdit);
         model.addAttribute("authors", allAuthors);
         model.addAttribute("genres", allGenres);
-        return Mono.just("/book/editBook");
+        return Mono.just("book/editBook");
     }
 
     @PostMapping("/book")
@@ -50,6 +50,6 @@ public class BookController {
         model.addAttribute("authors", allAuthors);
         model.addAttribute("genres", allGenres);
         model.addAttribute("book", book);
-        return Mono.just("/book/addBook");
+        return Mono.just("book/addBook");
     }
 }

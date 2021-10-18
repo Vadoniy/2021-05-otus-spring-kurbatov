@@ -1,0 +1,19 @@
+﻿version: '2'
+
+services:
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME:
+      MONGO_INITDB_ROOT_PASSWORD:
+    ports:
+      - 27017:27017
+  library:
+    build: .
+    container_name: vadony-library
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo

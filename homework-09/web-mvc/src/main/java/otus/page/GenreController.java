@@ -16,13 +16,13 @@ public class GenreController {
 
     @GetMapping("/genre")
     public Mono<String> getGenresList() {
-        return Mono.just("/genre/allGenres");
+        return Mono.just("genre/allGenres");
     }
 
     @PostMapping("/genre")
     public Mono<String> addGenre(Model model) {
         final var genre = new Genre();
         model.addAttribute("genre", genre);
-        return Mono.just("/genre/addGenre");
+        return Mono.just("genre/addGenre");
     }
 }
