@@ -63,8 +63,8 @@
         var data = {};
         data["id"] = $("#id-input").val();
         data["title"] = $("#title-input").val();
-        data["author"] = parseInt($("#author-input").val());
-        data["genre"] = parseInt($("#genre-input").val());
+        data["author"] =$("#author-input").val();
+        data["genre"] = $("#genre-input").val();
 
         $.ajax({
             type: 'POST',
