@@ -20,7 +20,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: metrics,prometheus,loggers,health
+        include: metrics,prometheus,logfile,health
   endpoint:
     health:
       show-details: always
@@ -34,3 +34,12 @@ info:
   version: @project.version@
   author: vadony
   description: Vadoniy's electronic library on Otus Spring Framework learning course
+
+logging:
+  file:
+    max-history: 10
+    max-size: 10MB
+    name: logs/vadony-library.log
+  level:
+    org.springframework: INFO
+    otus.rest: DEBUG

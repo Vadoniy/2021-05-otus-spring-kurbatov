@@ -1,6 +1,7 @@
 package otus.rest;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -21,6 +22,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Component
+@Slf4j
 public class BookRestController {
 
     @Bean
@@ -43,10 +45,12 @@ public class BookRestController {
         private final GenreRepository genreRepository;
 
         Mono<ServerResponse> list(ServerRequest request) {
+            log.debug("List of books...");
             return ok().contentType(APPLICATION_JSON).body(bookRepository.findAll().map(BookDto::toDto), BookDto.class);
         }
 
         Mono<ServerResponse> save(ServerRequest request) {
+            log.info("Going to save book...");
             final var newBook = new Book();
             return request.body(toMono(Book.class))
                     .map(book -> {
@@ -66,6 +70,7 @@ public class BookRestController {
         }
 
         Mono<ServerResponse> delete(ServerRequest request) {
+            log.info("Going to delete book...");
             return bookRepository.deleteById(request.pathVariable("id"))
                     .flatMap(aVoid -> ok().contentType(APPLICATION_JSON).body(fromValue(aVoid)));
         }
