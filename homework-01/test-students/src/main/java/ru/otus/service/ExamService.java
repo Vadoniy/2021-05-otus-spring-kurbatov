@@ -7,5 +7,5 @@ package ru.otus.service;
  */
 public interface ExamService {
 
-    void startExam();
+    String startExam();
 }
