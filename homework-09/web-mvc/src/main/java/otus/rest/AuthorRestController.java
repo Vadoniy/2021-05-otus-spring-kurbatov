@@ -1,6 +1,7 @@
 package otus.rest;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -20,6 +21,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Component
+@Slf4j
 public class AuthorRestController {
 
     @Bean
@@ -43,10 +45,12 @@ public class AuthorRestController {
         private final BookRepository bookRepository;
 
         Mono<ServerResponse> list(ServerRequest request) {
+            log.debug("List of authors...");
             return ok().contentType(APPLICATION_JSON).body(authorRepository.findAll().map(AuthorDto::toDto), AuthorDto.class);
         }
 
         Mono<ServerResponse> save(ServerRequest request) {
+            log.info("Going to save author...");
             final var authorMono = request.body(toMono(Author.class));
             return authorMono.flatMap(
                     author -> ok().contentType(APPLICATION_JSON)
@@ -55,6 +59,7 @@ public class AuthorRestController {
         }
 
         Mono<ServerResponse> delete(ServerRequest request) {
+            log.info("Going to delete author...");
             return authorRepository.deleteById(request.pathVariable("id"))
                     .then(bookRepository.deleteByAuthorId(request.pathVariable("id")))
                     .flatMap(aVoid -> ok().contentType(APPLICATION_JSON)

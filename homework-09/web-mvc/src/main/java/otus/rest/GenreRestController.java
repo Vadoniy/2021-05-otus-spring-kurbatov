@@ -1,6 +1,7 @@
 package otus.rest;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -20,6 +21,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Component
+@Slf4j
 public class GenreRestController {
 
     @Bean
@@ -40,15 +42,18 @@ public class GenreRestController {
         private final GenreRepository genreRepository;
 
         Mono<ServerResponse> list(ServerRequest request) {
+            log.debug("List of genres...");
             return ok().contentType(APPLICATION_JSON).body(genreRepository.findAll().map(GenreDto::toDto), GenreDto.class);
         }
 
         Mono<ServerResponse> save(ServerRequest request) {
+            log.info("Going to save genre...");
             final var genreMono = request.body(toMono(Genre.class));
             return genreMono.flatMap(genre -> ok().contentType(APPLICATION_JSON).body(genreRepository.save(genre).map(GenreDto::toDto), GenreDto.class));
         }
 
         Mono<ServerResponse> delete(ServerRequest request) {
+            log.info("Going to delete genre...");
             return genreRepository.deleteById(request.pathVariable("id"))
                     .then(bookRepository.deleteByGenreId(request.pathVariable("id")))
                     .flatMap(aVoid -> ok().contentType(APPLICATION_JSON)
