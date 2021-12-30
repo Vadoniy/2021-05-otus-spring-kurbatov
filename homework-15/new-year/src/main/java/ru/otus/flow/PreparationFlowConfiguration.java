@@ -47,33 +47,32 @@ public class PreparationFlowConfiguration {
     }
 
     @Bean
-    public IntegrationFlow christmasTreeFlow(LuckService luckService, ChristmasTreeStore christmasTreeStore) {
+    public IntegrationFlow christmasTreeFlow(LuckService luckService, ChristmasTreeStore christmasTreeStore, QueueChannel partyPreparationChannel, QueueChannel mollChannel) {
         return IntegrationFlows
-                .from("partyPreparationChannel")
+                .from(partyPreparationChannel)
                 .handle(luckService, GET_LUCK_METHOD)
                 .handle(christmasTreeStore, SET_UP_CHRISTMAS_TREE_METHOD)
-                .channel("mollChannel")
+                .channel(mollChannel)
                 .get();
     }
 
     @Bean
-    public IntegrationFlow mollFlow(LuckService luckService, Moll moll) {
+    public IntegrationFlow mollFlow(LuckService luckService, Moll moll, QueueChannel mollChannel, QueueChannel kitchenChannel) {
         return IntegrationFlows
-                .from("mollChannel")
+                .from(mollChannel)
                 .handle(luckService, GET_LUCK_METHOD)
                 .handle(moll, BUY_PRESENTS_METHOD)
-                .channel("kitchenChannel")
+                .channel(kitchenChannel)
                 .get();
     }
 
     @Bean
-    public IntegrationFlow kitchenFlow(LuckService luckService, KitchenService kitchenService) {
+    public IntegrationFlow kitchenFlow(LuckService luckService, KitchenService kitchenService, QueueChannel kitchenChannel, QueueChannel champagneChannel) {
         return IntegrationFlows
-                .from("kitchenChannel")
+                .from(kitchenChannel)
                 .handle(luckService, GET_LUCK_METHOD)
-                .split()
                 .handle(kitchenService, SET_TABLE_METHOD)
-                .channel("champagneChannel")
+                .channel(champagneChannel)
                 .get();
     }
 
