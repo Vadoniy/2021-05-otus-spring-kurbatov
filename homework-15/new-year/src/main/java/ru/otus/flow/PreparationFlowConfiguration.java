@@ -6,9 +6,20 @@ import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.dsl.MessageChannels;
+import ru.otus.service.*;
 
 @Configuration
 public class PreparationFlowConfiguration {
+
+    public static final String BUY_PRESENTS_METHOD = "buyPresents";
+
+    public static final String GET_LUCK_METHOD = "getLuck";
+
+    public static final String SET_TABLE_METHOD = "setTable";
+
+    public static final String SET_UP_CHRISTMAS_TREE_METHOD = "setUpChristmasTree";
+
+    public static final String TAKE_SOME_CHAMPAGNE_METHOD = "takeSomeChampagne";
 
     @Bean
     public QueueChannel partyPreparationChannel() {
@@ -36,53 +47,49 @@ public class PreparationFlowConfiguration {
     }
 
     @Bean
-    public IntegrationFlow christmasTreeFlow() {
+    public IntegrationFlow christmasTreeFlow(LuckService luckService, ChristmasTreeStore christmasTreeStore) {
         return IntegrationFlows
                 .from("partyPreparationChannel")
-                .handle("luckService", "getLuck")
-                .split()
-                .handle("christmasTreeStore", "setUpChristmasTree")
+                .handle(luckService, GET_LUCK_METHOD)
+                .handle(christmasTreeStore, SET_UP_CHRISTMAS_TREE_METHOD)
                 .channel("mollChannel")
                 .get();
     }
 
     @Bean
-    public IntegrationFlow mollFlow() {
+    public IntegrationFlow mollFlow(LuckService luckService, Moll moll) {
         return IntegrationFlows
                 .from("mollChannel")
-                .handle("luckService", "getLuck")
-                .split()
-                .handle("moll", "buyPresents")
+                .handle(luckService, GET_LUCK_METHOD)
+                .handle(moll, BUY_PRESENTS_METHOD)
                 .channel("kitchenChannel")
                 .get();
     }
 
     @Bean
-    public IntegrationFlow kitchenFlow() {
+    public IntegrationFlow kitchenFlow(LuckService luckService, KitchenService kitchenService) {
         return IntegrationFlows
                 .from("kitchenChannel")
-                .handle("luckService", "getLuck")
+                .handle(luckService, GET_LUCK_METHOD)
                 .split()
-                .handle("kitchenService", "setTable")
+                .handle(kitchenService, SET_TABLE_METHOD)
                 .channel("champagneChannel")
                 .get();
     }
 
     @Bean
-    public IntegrationFlow champagneFlow() {
+    public IntegrationFlow champagneFlow(LuckService luckService, ChampagneService champagneService) {
         return IntegrationFlows
                 .from("champagneChannel")
-                .handle("luckService", "getLuck")
-                .split()
-                .handle("champagneService", "takeSomeChampagne")
-                .channel("partyAggregateChannel")
+                .handle(luckService, GET_LUCK_METHOD)
+                .handle(champagneService, TAKE_SOME_CHAMPAGNE_METHOD)
+                .channel("partyResultChannel")
                 .get();
     }
 
     @Bean
-    public IntegrationFlow partyAggregateFlow() {
-        return IntegrationFlows.from("partyAggregateChannel")
-                .aggregate()
+    public IntegrationFlow partyResultFlow() {
+        return IntegrationFlows.from("partyResultChannel")
                 .channel("partyChannel")
                 .get();
     }
