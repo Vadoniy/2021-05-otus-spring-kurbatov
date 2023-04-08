@@ -26,6 +26,7 @@
         <jupiter.version>5.7.2</jupiter.version>
         <mockito.version>3.11.2</mockito.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <shell.version>2.0.1.RELEASE</shell.version>
     </properties>
 
     <build>
@@ -100,6 +101,11 @@
             <version>${maven.compiler.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.shell</groupId>
+            <artifactId>spring-shell-starter</artifactId>
+            <version>${shell.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>${jupiter.version}</version>
@@ -115,6 +121,11 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -32,7 +32,7 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public void startExam() {
+    public String startExam() {
         try {
             final var questions = questionDao.getQuestions();
             localizationDisplayService.showLocalizedMessage("info.greeting", stopWord);
@@ -43,17 +43,15 @@ public class ExamServiceImpl implements ExamService {
                     .filter(Boolean::booleanValue)
                     .count();
             if (amountOfCorrectAnswers <= amountOfQuestions / 2) {
-                localizationDisplayService.showLocalizedMessage("info.result.bad");
+                return localizationDisplayService.getLocalizedMessage("info.result.bad");
             } else if (amountOfCorrectAnswers == amountOfQuestions) {
-                localizationDisplayService.showLocalizedMessage("info.result.perfect");
-            } else {
-                localizationDisplayService.showLocalizedMessage("info.result.so-so");
+                return localizationDisplayService.getLocalizedMessage("info.result.perfect");
             }
-            System.exit(0);
         } catch (ReadFileQuestionsException ex) {
             localizationDisplayService.showLocalizedMessage("input.error.file", ex.getMessage());
             System.exit(1);
         }
+        return localizationDisplayService.getLocalizedMessage("info.result.so-so");
     }
 
     private boolean processTheQuestion(ExamQuestion question) {
